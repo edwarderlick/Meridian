@@ -38,13 +38,27 @@ export async function nonceHandler(req, res) {
     return
   }
 
-  const ip = clientIp(req)
-  const [ipOk, addressOk] = await Promise.all([
-    checkRateLimit(`nonce:ip:${ip}`, { limit: NONCE_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
-    checkRateLimit(`nonce:addr:${address.toLowerCase()}`, { limit: NONCE_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
-  ])
+  // Rate limiting is a secondary defense on top of the core sign-in flow, not part of it — both
+  // it and createNonce() below go through the same Firestore/Firebase Admin connection, so a
+  // real Firebase Admin problem (bad/missing FIREBASE_SERVICE_ACCOUNT_KEY, etc.) would otherwise
+  // throw HERE, uncaught, crashing the whole function before ever reaching createNonce()'s own
+  // try/catch — which is exactly what produces an opaque platform error page (not JSON) instead
+  // of the specific "Failed to issue nonce" response that catch block is designed to return.
+  // Failing open here means a genuine Firebase Admin problem still surfaces, just through the
+  // correct, already-informative error path below instead of crashing invisibly above it.
+  let ipOk = true
+  let addressOk = true
+  try {
+    const ip = clientIp(req)
+    ;[ipOk, addressOk] = await Promise.all([
+      checkRateLimit(`nonce:ip:${ip}`, { limit: NONCE_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
+      checkRateLimit(`nonce:addr:${address.toLowerCase()}`, { limit: NONCE_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
+    ])
+  } catch (rateLimitErr) {
+    console.error('[auth/nonce] rate limit check failed — failing open (allowing the request through):', rateLimitErr)
+  }
   if (!ipOk || !addressOk) {
-    console.warn(`[auth/nonce] rate limited: ip=${ip} address=${address}`)
+    console.warn(`[auth/nonce] rate limited: address=${address}`)
     res.status(429).json({ error: 'Too many requests — try again in a few minutes.' })
     return
   }
@@ -75,13 +89,21 @@ export async function verifyHandler(req, res) {
     return
   }
 
-  const ip = clientIp(req)
-  const [ipOk, addressOk] = await Promise.all([
-    checkRateLimit(`verify:ip:${ip}`, { limit: VERIFY_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
-    checkRateLimit(`verify:addr:${address.toLowerCase()}`, { limit: VERIFY_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
-  ])
+  // Same fail-open reasoning as nonceHandler above — this check must never be able to crash the
+  // function ahead of consumeNonce()'s own try/catch.
+  let ipOk = true
+  let addressOk = true
+  try {
+    const ip = clientIp(req)
+    ;[ipOk, addressOk] = await Promise.all([
+      checkRateLimit(`verify:ip:${ip}`, { limit: VERIFY_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
+      checkRateLimit(`verify:addr:${address.toLowerCase()}`, { limit: VERIFY_RATE_LIMIT, windowMs: RATE_LIMIT_WINDOW_MS }),
+    ])
+  } catch (rateLimitErr) {
+    console.error('[auth/verify] rate limit check failed — failing open (allowing the request through):', rateLimitErr)
+  }
   if (!ipOk || !addressOk) {
-    console.warn(`[auth/verify] rate limited: ip=${ip} address=${address}`)
+    console.warn(`[auth/verify] rate limited: address=${address}`)
     res.status(429).json({ error: 'Too many requests — try again in a few minutes.' })
     return
   }
