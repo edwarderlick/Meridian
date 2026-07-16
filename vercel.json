@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/circle/:path*", "destination": "/api/circle/proxy?path=:path*" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
