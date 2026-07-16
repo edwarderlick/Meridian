@@ -1,9 +1,11 @@
 import { ViemAdapter } from '@circle-fin/adapter-viem-v2'
 import { useEffect, useState } from 'react'
 import { createPublicClient, createWalletClient, custom, http, type EIP1193Provider } from 'viem'
+import { sendTransaction as viemSendTransaction } from 'viem/actions'
 import { useAccount } from 'wagmi'
 import { BRIDGE_SUPPORTED_EVM_CHAINS } from '../config/bridgeChains'
 import { RPC_URL_BY_CHAIN_ID } from '../config/chains'
+import { computeBufferedFees } from '../lib/gasFees'
 
 /**
  * Builds a Bridge Kit ViemAdapter from the connected browser wallet — never a private key.
@@ -87,8 +89,31 @@ export function useEvmAdapter() {
               // keyed by chain id, is what actually makes the override reach Bridge Kit's
               // approve/burn/mint simulate + gas-estimate calls.
               getPublicClient: ({ chain }) => createPublicClient({ chain, transport: http(RPC_URL_BY_CHAIN_ID[chain.id]) }),
-              getWalletClient: ({ chain }) =>
-                createWalletClient({ account: address as `0x${string}`, chain, transport: custom(provider) }),
+              // Bridge Kit and Swap Kit call `sendTransaction` on this client directly, with no
+              // fee fields set — neither SDK's public API (BridgeParams / SwapKit's swap config)
+              // exposes a gas-override hook, so this is the one place both funnel through. Same
+              // fix as gasFees.ts (freshly-fetched baseFee, buffered 1.5x), applied here instead
+              // of at the SDK call site since there is no call site to patch.
+              getWalletClient: ({ chain }) => {
+                const walletClient = createWalletClient({ account: address as `0x${string}`, chain, transport: custom(provider) })
+                const feePublicClient = createPublicClient({ chain, transport: http(RPC_URL_BY_CHAIN_ID[chain.id]) })
+                return walletClient.extend((client) => ({
+                  // `args` is intentionally loosely typed here: viem's `sendTransaction` generics
+                  // (const type params keyed off the request's discriminated `type` field) don't
+                  // survive re-wrapping through `.extend()`, and this override only ever adds two
+                  // optional bigint fee fields — it never changes the request shape otherwise.
+                  async sendTransaction(args: Record<string, unknown>) {
+                    let fees: Partial<import('../lib/gasFees').BufferedFees> = {}
+                    if (args.maxFeePerGas === undefined && args.gasPrice === undefined) {
+                      const block = await feePublicClient.getBlock()
+                      if (block.baseFeePerGas !== null) {
+                        fees = computeBufferedFees(block.baseFeePerGas)
+                      }
+                    }
+                    return viemSendTransaction(client, { ...args, ...fees } as Parameters<typeof viemSendTransaction>[1])
+                  },
+                }))
+              },
             },
             {
               addressContext: 'user-controlled',

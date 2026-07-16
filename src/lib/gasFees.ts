@@ -32,6 +32,13 @@ export interface BufferedFees {
   maxPriorityFeePerGas: bigint
 }
 
+/** Pure buffer math, shared by every call site — see the module comment for why the 1.5x multiplier exists. */
+export function computeBufferedFees(baseFeePerGas: bigint): BufferedFees {
+  const maxPriorityFeePerGas = MIN_PRIORITY_FEE_WEI
+  const maxFeePerGas = (baseFeePerGas * BASE_FEE_MULTIPLIER_NUMERATOR) / BASE_FEE_MULTIPLIER_DENOMINATOR + maxPriorityFeePerGas
+  return { maxFeePerGas, maxPriorityFeePerGas }
+}
+
 /**
  * Live-fetches the target chain's current base fee and returns an explicit, buffered
  * maxFeePerGas/maxPriorityFeePerGas pair to attach to a write call — undefined if the chain
@@ -41,8 +48,5 @@ export interface BufferedFees {
 export async function getBufferedFees(config: Config, chainId: number): Promise<BufferedFees | undefined> {
   const block = await getBlock(config, { chainId })
   if (block.baseFeePerGas === null) return undefined
-
-  const maxPriorityFeePerGas = MIN_PRIORITY_FEE_WEI
-  const maxFeePerGas = (block.baseFeePerGas * BASE_FEE_MULTIPLIER_NUMERATOR) / BASE_FEE_MULTIPLIER_DENOMINATOR + maxPriorityFeePerGas
-  return { maxFeePerGas, maxPriorityFeePerGas }
+  return computeBufferedFees(block.baseFeePerGas)
 }
