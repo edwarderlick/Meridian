@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian | USDC Everywhere</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#353436",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary": "#3c0090",
+                        "on-primary-container": "#4f0051",
+                        "on-tertiary-fixed": "#001f28",
+                        "inverse-surface": "#e5e2e3",
+                        "secondary-container": "#7000ff",
+                        "on-tertiary": "#003543",
+                        "surface-container-low": "#1c1b1c",
+                        "tertiary-fixed-dim": "#4cd6ff",
+                        "background": "#131314",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "on-surface": "#e5e2e3",
+                        "surface-bright": "#3a393a",
+                        "on-primary": "#5b005d",
+                        "on-primary-fixed-variant": "#800083",
+                        "on-secondary-fixed": "#23005b",
+                        "primary-fixed-dim": "#ffaaf6",
+                        "on-secondary-container": "#ddcdff",
+                        "on-background": "#e5e2e3",
+                        "surface-tint": "#ffaaf6",
+                        "primary-container": "#f432f6",
+                        "error-container": "#93000a",
+                        "on-primary-fixed": "#380039",
+                        "secondary": "#d1bcff",
+                        "surface-container": "#201f20",
+                        "surface": "#131314",
+                        "inverse-on-surface": "#313031",
+                        "inverse-primary": "#a800ab",
+                        "outline": "#a2899c",
+                        "tertiary-container": "#009dc1",
+                        "primary-fixed": "#ffd7f6",
+                        "surface-container-highest": "#353436",
+                        "surface-container-high": "#2a2a2b",
+                        "tertiary": "#4cd6ff",
+                        "outline-variant": "#554151",
+                        "on-tertiary-container": "#002e3a",
+                        "on-error": "#690005",
+                        "primary": "#ffaaf6",
+                        "on-surface-variant": "#dabfd3",
+                        "surface-dim": "#131314",
+                        "surface-container-lowest": "#0e0e0f",
+                        "tertiary-fixed": "#b7eaff",
+                        "secondary-fixed": "#e9ddff",
+                        "on-secondary-fixed-variant": "#5700c9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px",
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "gutter": "24px",
+                        "margin-desktop": "48px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["JetBrains Mono"],
+                        "mono-data": ["JetBrains Mono"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-xl": ["Hanken Grotesk"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            background-color: #131314;
+            color: #e5e2e3;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-premium {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(24px);
+            border: 1px solid transparent;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)), linear-gradient(135deg, rgba(255, 170, 246, 0.2) 0%, rgba(209, 188, 255, 0.1) 100%);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+            box-shadow: 0 20px 40px -15px rgba(209, 188, 255, 0.05);
+        }
+        .text-gradient {
+            background: linear-gradient(to bottom right, #ffaaf6, #d1bcff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-line {
+            background: linear-gradient(to bottom, #d1bcff, #ffaaf6);
+        }
+        @keyframes drift {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(10px, -15px); }
+            100% { transform: translate(0, 0); }
+        }
+        .drift { animation: drift 8s ease-in-out infinite; }
+        .stagger-in > * { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .stagger-in.visible > * { opacity: 1; transform: translateY(0); }
+        .stagger-in > *:nth-child(1) { transition-delay: 0.1s; }
+        .stagger-in > *:nth-child(2) { transition-delay: 0.2s; }
+        .stagger-in > *:nth-child(3) { transition-delay: 0.3s; }
+        .stagger-in > *:nth-child(4) { transition-delay: 0.4s; }
+        .stagger-in > *:nth-child(5) { transition-delay: 0.5s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { animation: none !important; transition: none !important; }
+        }
+
+        .orbit-pulse {
+            position: relative;
+        }
+        .orbit-pulse::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            border: 1px dashed rgba(255, 170, 246, 0.2);
+            border-radius: 50%;
+            animation: spin 60s linear infinite;
+        }
+        @keyframes spin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+    </style>
+</head>
+<body class="font-body-md overflow-x-hidden">
+<!-- Top Navigation -->
+<nav class="bg-background/80 backdrop-blur-xl docked full-width top-0 sticky z-50 border-b border-white/5 shadow-xl shadow-secondary/10">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="text-2xl font-headline-xl font-bold tracking-tighter text-on-surface">Meridian</div>
+<div class="hidden md:flex items-center gap-stack-lg">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-caps text-label-caps" href="#">Ecosystem</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#">Build</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#">Governance</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-label-caps text-label-caps" href="#">Community</a>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="hidden lg:flex px-6 py-2 rounded-full border border-white/10 hover:bg-white/5 transition-all text-on-surface font-label-caps text-label-caps">View Docs</button>
+<button class="px-6 py-2 rounded-full bg-primary-container text-on-primary-container font-bold hover:opacity-90 transition-all scale-95 active:opacity-80 font-label-caps text-label-caps">Launch Console</button>
+</div>
+</div>
+</nav>
+<!-- Hero Section (KEEPING ORIGINAL) -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+
+<!-- STITCH_SHADER_START:ANIMATION_12 class="absolute inset-0 w-full h-full opacity-40" -->
+<div class="absolute inset-0 w-full h-full opacity-40" style="display:block;">
+<canvas id="shader-canvas-ANIMATION_12" style="display:block;width:100%;height:100%"></canvas>
+<script>
+(function() {
+  const canvas = document.getElementById('shader-canvas-ANIMATION_12');
+
+  // Sync the WebGL drawing-buffer size with the CSS-driven layout size.
+  // This fires on initial layout and whenever the element is resized.
+  function syncSize() {
+    const w = canvas.clientWidth  || 1280;
+    const h = canvas.clientHeight || 720;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width  = w;
+      canvas.height = h;
+    }
+  }
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(syncSize).observe(canvas);
+  }
+  syncSize();
+
+  const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+  if (!gl) return;
+  const vs = `attribute vec2 a_position;
+varying vec2 v_texCoord;
+void main() {
+  v_texCoord = a_position * 0.5 + 0.5;
+  gl_Position = vec4(a_position, 0.0, 1.0);
+}`;
+  const fs = `precision highp float;
+varying vec2 v_texCoord;
+uniform float u_time;
+uniform vec2 u_resolution;
+
+void main() {
+    vec2 uv = v_texCoord;
+    
+    // Create organic movement
+    float n = sin(uv.x * 3.0 + u_time * 0.5) * 0.5 + 0.5;
+    float m = cos(uv.y * 2.0 - u_time * 0.3) * 0.5 + 0.5;
+    
+    // Arc network inspired colors (Pink, Purple, Deep Blue)
+    vec3 color1 = vec3(0.88, 0.08, 0.90); // Vibrant Pink
+    vec3 color2 = vec3(0.40, 0.15, 0.95); // Royal Purple
+    vec3 color3 = vec3(0.05, 0.05, 0.15); // Deep Obsidian
+    
+    // Flowing gradient wave logic
+    float wave = sin(uv.x * 4.0 + u_time * 0.2) * 0.1;
+    float line = smoothstep(0.4 + wave, 0.41 + wave, uv.y) - smoothstep(0.44 + wave, 0.45 + wave, uv.y);
+    
+    vec3 bg = mix(color3, color2 * 0.2, uv.y);
+    vec3 gradient = mix(color1, color2, n * m);
+    
+    vec3 finalColor = mix(bg, gradient, line * 0.6);
+    
+    // Add some subtle glow
+    finalColor += gradient * (0.05 / distance(uv.y, 0.43 + wave));
+    
+    gl_FragColor = vec4(finalColor, 1.0);
+}`;
+  function cs(type, src) {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src);
+    gl.compileShader(s);
+    return s;
+  }
+  const prog = gl.createProgram();
+  gl.attachShader(prog, cs(gl.VERTEX_SHADER, vs));
+  gl.attachShader(prog, cs(gl.FRAGMENT_SHADER, fs));
+  gl.linkProgram(prog);
+  gl.useProgram(prog);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+  const pos = gl.getAttribLocation(prog, 'a_position');
+  gl.enableVertexAttribArray(pos);
+  gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+  const uTime = gl.getUniformLocation(prog, 'u_time');
+  const uRes = gl.getUniformLocation(prog, 'u_resolution');
+  const uMouse = gl.getUniformLocation(prog, 'u_mouse');
+
+  // u_mouse is in pixel coordinates matching u_resolution (ShaderToy convention).
+  // Shaders that need normalized coords should use: u_mouse / u_resolution.
+  let mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width && rect.height) {
+      const nx = (event.clientX - rect.left) / rect.width;
+      const ny = 1.0 - (event.clientY - rect.top) / rect.height;
+      mouse.x = nx * canvas.width;
+      mouse.y = ny * canvas.height;
+    }
+  });
+
+  function render(t) {
+    if (typeof ResizeObserver === 'undefined') syncSize();
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    if (uTime) gl.uniform1f(uTime, t * 0.001);
+    if (uRes) gl.uniform2f(uRes, canvas.width, canvas.height);
+    if (uMouse) gl.uniform2f(uMouse, mouse.x, mouse.y);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    requestAnimationFrame(render);
+  }
+  render(0);
+})();
+</script>
+</div>
+<!-- STITCH_SHADER_END:ANIMATION_12 -->
+
+<div class="relative z-10 max-w-5xl mx-auto px-margin-mobile text-center">
+<div class="inline-flex items-center gap-2 px-4 py-1 rounded-full glass border-white/10 mb-8 animate-pulse">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="font-label-caps text-label-caps text-primary uppercase">Mainnet Beta Now Live</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl md:text-[84px] leading-none mb-8 tracking-tighter text-gradient">
+                USDC, everywhere.<br/>One console.
+            </h1>
+<p class="font-body-md text-on-surface-variant max-w-2xl mx-auto mb-12 text-lg">
+                The institutional flight deck for multi-chain liquidity. Manage your entire treasury through a single, unified interface powered by Meridian's abstraction layer.
+            </p>
+<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+<button class="w-full sm:w-auto px-10 py-4 rounded-full bg-primary-container text-on-primary-container font-bold text-lg hover:shadow-lg hover:shadow-primary/20 transition-all">Launch Console</button>
+<button class="w-full sm:w-auto px-10 py-4 rounded-full glass text-on-surface font-bold text-lg border-white/10 hover:border-white/30 transition-all">View Docs</button>
+</div>
+<!-- Chain Logo Row (NEW) -->
+<div class="mt-24 flex flex-wrap justify-center gap-8 md:gap-12 opacity-60 hover:opacity-100 transition-opacity duration-500">
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center drift bg-white/5 hover:bg-primary/20 hover:border-primary/50 transition-all cursor-pointer" style="animation-delay: 0s">
+<span class="font-mono-data text-xs font-bold">ETH</span>
+</div>
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center drift bg-white/5 hover:bg-primary/20 hover:border-primary/50 transition-all cursor-pointer" style="animation-delay: 0.5s">
+<span class="font-mono-data text-xs font-bold">ARB</span>
+</div>
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center drift bg-white/5 hover:bg-tertiary/20 hover:border-tertiary/50 transition-all cursor-pointer" style="animation-delay: 1.2s">
+<span class="font-mono-data text-xs font-bold">BASE</span>
+</div>
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center drift bg-white/5 hover:bg-error/20 hover:border-error/50 transition-all cursor-pointer" style="animation-delay: 0.8s">
+<span class="font-mono-data text-xs font-bold text-error">OPT</span>
+</div>
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center drift bg-white/5 hover:bg-primary/20 hover:border-primary/50 transition-all cursor-pointer" style="animation-delay: 1.5s">
+<span class="font-mono-data text-xs font-bold text-primary">ARC</span>
+</div>
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center drift bg-white/5 hover:bg-white/20 transition-all cursor-pointer" style="animation-delay: 0.3s">
+<span class="font-mono-data text-xs font-bold">AVA</span>
+</div>
+<div class="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center drift bg-white/5 hover:bg-secondary/20 hover:border-secondary/50 transition-all cursor-pointer" style="animation-delay: 2.1s">
+<span class="font-mono-data text-xs font-bold">POL</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Stat Pillars -->
+<section class="py-32 relative">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 stagger-in" id="stat-pillars">
+<div class="glass-premium p-10 rounded-2xl group hover:translate-y-[-4px] transition-transform duration-500">
+<div class="text-primary font-label-caps text-[64px] mb-4 font-bold tracking-tight"><span class="counter" data-target="7">0</span></div>
+<h3 class="font-headline-lg text-on-surface mb-2">Chains Supported</h3>
+<p class="font-body-sm text-on-surface-variant mb-6">Deep liquidity across Ethereum, Arbitrum, Base, Optimism, Arc, Avalanche and Polygon.</p>
+<a class="inline-flex items-center gap-2 text-primary font-label-caps text-[11px] hover:gap-3 transition-all" href="#">LEARN MORE <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+<div class="glass-premium p-10 rounded-2xl group hover:translate-y-[-4px] transition-transform duration-500">
+<div class="text-tertiary font-label-caps text-[64px] mb-4 font-bold tracking-tight"><span class="counter" data-target="1">0</span></div>
+<h3 class="font-headline-lg text-on-surface mb-2">Unified Balance</h3>
+<p class="font-body-sm text-on-surface-variant mb-6">A singular, consolidated view of your entire multi-chain treasury through the Meridian engine.</p>
+<a class="inline-flex items-center gap-2 text-tertiary font-label-caps text-[11px] hover:gap-3 transition-all" href="#">LEARN MORE <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+<div class="glass-premium p-10 rounded-2xl group hover:translate-y-[-4px] transition-transform duration-500">
+<div class="text-secondary font-label-caps text-[64px] mb-4 font-bold tracking-tight"><span class="counter" data-target="0">0</span></div>
+<h3 class="font-headline-lg text-on-surface mb-2">Idle USDC</h3>
+<p class="font-body-sm text-on-surface-variant mb-6">Auto-optimization logic ensures your capital is always routed to the most secure, high-yield vaults.</p>
+<a class="inline-flex items-center gap-2 text-secondary font-label-caps text-[11px] hover:gap-3 transition-all" href="#">LEARN MORE <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+</div>
+</div>
+</div>
+</section>
+<!-- Feature Showcase -->
+<section class="py-32 relative overflow-hidden bg-surface-container-lowest/30">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<div class="text-center mb-24">
+<h2 class="font-headline-xl text-headline-xl mb-4">Explore Meridian</h2>
+<p class="text-on-surface-variant font-body-md text-lg">One console, every chain.</p>
+</div>
+<div class="grid grid-cols-12 gap-6 relative">
+<!-- Central Orbitring (Decorative) -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full pointer-events-none flex items-center justify-center opacity-20">
+<div class="orbit-pulse w-[500px] h-[500px] flex items-center justify-center">
+<div class="w-64 h-64 rounded-full bg-primary/5 blur-[80px]"></div>
+</div>
+</div>
+<!-- Grid Items -->
+<div class="col-span-12 lg:col-span-4 glass p-8 rounded-2xl stagger-in visible">
+<div class="flex justify-between items-start mb-8">
+<div class="px-3 py-1 rounded-full bg-[#00ffd9]/10 text-[#00ffd9] text-[10px] font-bold uppercase tracking-widest border border-[#00ffd9]/20 flex items-center gap-1.5 shadow-[0_0_10px_rgba(0,255,217,0.2)]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00ffd9] animate-pulse"></span> Live
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">send</span>
+</div>
+<h3 class="font-headline-lg text-on-surface mb-2">Transfer</h3>
+<p class="font-body-sm text-on-surface-variant">Global institutional-grade transfers with instant finality.</p>
+</div>
+<div class="col-span-12 lg:col-span-4 glass p-8 rounded-2xl">
+<div class="flex justify-between items-start mb-8">
+<div class="px-3 py-1 rounded-full bg-[#00ffd9]/10 text-[#00ffd9] text-[10px] font-bold uppercase tracking-widest border border-[#00ffd9]/20 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00ffd9] animate-pulse"></span> Live
+</div>
+<span class="material-symbols-outlined text-tertiary text-3xl">swap_calls</span>
+</div>
+<h3 class="font-headline-lg text-on-surface mb-2">Bridge</h3>
+<p class="font-body-sm text-on-surface-variant">Sovereign liquidity movement powered by Circle CCTP.</p>
+</div>
+<div class="col-span-12 lg:col-span-4 glass p-8 rounded-2xl">
+<div class="flex justify-between items-start mb-8">
+<div class="px-3 py-1 rounded-full bg-[#00ffd9]/10 text-[#00ffd9] text-[10px] font-bold uppercase tracking-widest border border-[#00ffd9]/20 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00ffd9] animate-pulse"></span> Live
+</div>
+<span class="material-symbols-outlined text-secondary text-3xl">account_balance_wallet</span>
+</div>
+<h3 class="font-headline-lg text-on-surface mb-2">Unified Balance</h3>
+<p class="font-body-sm text-on-surface-variant">Aggregated view of assets across all supported networks.</p>
+</div>
+<div class="col-span-12 lg:col-span-6 glass p-8 rounded-2xl">
+<div class="flex justify-between items-start mb-8">
+<div class="px-3 py-1 rounded-full bg-[#00ffd9]/10 text-[#00ffd9] text-[10px] font-bold uppercase tracking-widest border border-[#00ffd9]/20 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00ffd9] animate-pulse"></span> Live (Beta)
+</div>
+<span class="material-symbols-outlined text-primary text-3xl">swap_horiz</span>
+</div>
+<h3 class="font-headline-lg text-on-surface mb-2">Swap</h3>
+<p class="font-body-sm text-on-surface-variant">Best-execution swaps via the Arc testnet aggregator.</p>
+</div>
+<div class="col-span-12 lg:col-span-6 glass p-8 rounded-2xl">
+<div class="flex justify-between items-start mb-8">
+<div class="px-3 py-1 rounded-full bg-[#00ffd9]/10 text-[#00ffd9] text-[10px] font-bold uppercase tracking-widest border border-[#00ffd9]/20 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-[#00ffd9] animate-pulse"></span> Live
+</div>
+<span class="material-symbols-outlined text-tertiary text-3xl">smart_toy</span>
+</div>
+<h3 class="font-headline-lg text-on-surface mb-2">AI Assistant</h3>
+<p class="font-body-sm text-on-surface-variant">Natural language interface for executing complex on-chain logic.</p>
+</div>
+</div>
+<div class="mt-12 pt-12 border-t border-white/5">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 opacity-60">
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-surface-variant text-[9px] font-bold uppercase tracking-tighter text-on-surface-variant">Soon</span>
+<span class="font-body-sm">Recurring Payments</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-surface-variant text-[9px] font-bold uppercase tracking-tighter text-on-surface-variant">Soon</span>
+<span class="font-body-sm">Policy Management</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-surface-variant text-[9px] font-bold uppercase tracking-tighter text-on-surface-variant">Soon</span>
+<span class="font-body-sm">Insurance Modules</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-2 py-0.5 rounded bg-surface-variant text-[9px] font-bold uppercase tracking-tighter text-on-surface-variant">Soon</span>
+<span class="font-body-sm">Yield Markets</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Roadmap Timeline -->
+<section class="py-32 relative bg-surface-container-lowest">
+<div class="max-w-4xl mx-auto px-margin-mobile">
+<h2 class="font-headline-xl text-headline-xl text-center mb-24">Our Journey Ahead</h2>
+<div class="relative ml-4 md:ml-0">
+<div class="absolute left-0 md:left-1/2 top-0 bottom-0 w-[2px] gradient-line -translate-x-1/2 opacity-20"></div>
+<!-- Milestone 1 -->
+<div class="mb-24 relative md:w-1/2 md:pr-12 md:text-right md:ml-0 ml-10">
+<div class="absolute left-[-40px] md:left-auto md:right-[-10px] top-0 w-5 h-5 rounded-full bg-primary shadow-[0_0_15px_rgba(255,170,246,0.6)] z-10"></div>
+<div class="glass p-6 rounded-xl hover:bg-white/5 transition-colors">
+<span class="inline-block px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold mb-3">LIVE</span>
+<h4 class="font-headline-lg text-on-surface mb-2">Transfer &amp; Bridge</h4>
+<p class="font-body-sm text-on-surface-variant">Full mainnet release for institutional USDC movement across 7 chains.</p>
+</div>
+</div>
+<!-- Milestone 2 -->
+<div class="mb-24 relative md:w-1/2 md:pl-12 md:ml-auto ml-10">
+<div class="absolute left-[-40px] md:left-[-11px] top-0 w-5 h-5 rounded-full bg-primary shadow-[0_0_15px_rgba(255,170,246,0.6)] z-10"></div>
+<div class="glass p-6 rounded-xl hover:bg-white/5 transition-colors">
+<span class="inline-block px-2 py-1 rounded bg-primary/10 text-primary text-[10px] font-bold mb-3">LIVE</span>
+<h4 class="font-headline-lg text-on-surface mb-2">Unified Balance</h4>
+<p class="font-body-sm text-on-surface-variant">Real-time asset aggregation and reporting dashboard.</p>
+</div>
+</div>
+<!-- Milestone 3 -->
+<div class="mb-24 relative md:w-1/2 md:pr-12 md:text-right md:ml-0 ml-10">
+<div class="absolute left-[-40px] md:left-auto md:right-[-10px] top-0 w-5 h-5 rounded-full bg-tertiary shadow-[0_0_15px_rgba(76,214,255,0.4)] z-10"></div>
+<div class="glass p-6 rounded-xl hover:bg-white/5 transition-colors">
+<span class="inline-block px-2 py-1 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold mb-3">ARC TESTNET</span>
+<h4 class="font-headline-lg text-on-surface mb-2">Swap Aggregator</h4>
+<p class="font-body-sm text-on-surface-variant">Intelligent routing for asset exchanges with minimal slippage.</p>
+</div>
+</div>
+<!-- Milestone 4 -->
+<div class="mb-24 relative md:w-1/2 md:pl-12 md:ml-auto ml-10">
+<div class="absolute left-[-40px] md:left-[-11px] top-0 w-5 h-5 rounded-full bg-secondary shadow-[0_0_15px_rgba(209,188,255,0.4)] z-10"></div>
+<div class="glass p-6 rounded-xl hover:bg-white/5 transition-colors">
+<span class="inline-block px-2 py-1 rounded bg-secondary/10 text-secondary text-[10px] font-bold mb-3">IN PROGRESS</span>
+<h4 class="font-headline-lg text-on-surface mb-2">Policy Management</h4>
+<p class="font-body-sm text-on-surface-variant">Role-based access control and multi-sig permissioning for enterprise teams.</p>
+</div>
+</div>
+<!-- Milestone 5 -->
+<div class="mb-24 relative md:w-1/2 md:pr-12 md:text-right md:ml-0 ml-10 opacity-50">
+<div class="absolute left-[-40px] md:left-auto md:right-[-10px] top-0 w-5 h-5 rounded-full border-2 border-white/20 bg-background z-10"></div>
+<div class="glass p-6 rounded-xl">
+<span class="inline-block px-2 py-1 rounded bg-surface-variant text-on-surface-variant text-[10px] font-bold mb-3">PLANNED</span>
+<h4 class="font-headline-lg text-on-surface mb-2">Insurance &amp; Markets</h4>
+<p class="font-body-sm text-on-surface-variant">Permissionless hedging and high-yield vault participation.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Built on Arc -->
+<section class="py-32 relative overflow-hidden">
+<div class="absolute inset-0 pointer-events-none">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-primary/5 blur-[120px] rounded-full"></div>
+</div>
+<div class="max-w-container-max mx-auto px-margin-desktop text-center relative z-10">
+<div class="mb-8 font-label-caps text-label-caps text-primary tracking-widest">FOUNDATION</div>
+<h2 class="font-headline-xl text-headline-xl mb-8">Built on Arc Foundation</h2>
+<p class="font-body-md text-on-surface-variant max-w-3xl mx-auto mb-16 text-lg leading-relaxed">
+                Meridian leverages the Arc App Kit and Circle's CCTP to provide the most secure, battle-tested framework for institutional liquidity routing. Our modular architecture is built for the multi-chain future.
+            </p>
+<div class="flex flex-wrap justify-center gap-6 mb-20">
+<div class="flex items-center gap-3 glass px-6 py-3 rounded-full border-primary/20">
+<span class="material-symbols-outlined text-primary text-xl">shield</span>
+<span class="font-mono-data text-mono-data uppercase">Arc App Kit</span>
+</div>
+<div class="flex items-center gap-3 glass px-6 py-3 rounded-full border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary text-xl">hub</span>
+<span class="font-mono-data text-mono-data uppercase">Circle CCTP</span>
+</div>
+<div class="flex items-center gap-3 glass px-6 py-3 rounded-full border-secondary/20">
+<span class="material-symbols-outlined text-secondary text-xl">encrypted</span>
+<span class="font-mono-data text-mono-data uppercase">Multi-Sig Native</span>
+</div>
+</div>
+<div class="glass-premium rounded-3xl h-64 w-full flex items-center justify-center relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 opacity-50 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative z-10 text-center">
+<div class="flex items-center justify-center gap-2 mb-4">
+<span class="w-3 h-3 rounded-full bg-[#00ffd9] shadow-[0_0_10px_#00ffd9]"></span>
+<span class="font-label-caps text-label-caps tracking-[0.2em]">Network State: Healthy</span>
+</div>
+<div class="text-on-surface-variant font-mono-data text-xs">Uptime: 99.998% | Latency: 12ms</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-white/5 pt-24 pb-12">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-stack-lg px-margin-desktop max-w-container-max mx-auto mb-20">
+<div class="md:col-span-4 space-y-8">
+<div class="font-headline-lg text-headline-xl text-on-surface tracking-tighter">Meridian</div>
+<p class="font-body-sm text-on-surface-variant max-w-xs leading-relaxed">
+                The institutional flight deck for multi-chain liquidity management. Sovereignty at your fingertips.
+            </p>
+<div class="flex items-center gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-2xl">public</span>
+</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-2xl">code</span>
+</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">
+<span class="material-symbols-outlined text-2xl">chat</span>
+</a>
+</div>
+</div>
+<div class="md:col-span-2">
+<h5 class="font-label-caps text-label-caps text-primary mb-8 tracking-widest">BUILD</h5>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Documentation</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">API Reference</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">SDKs</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Brand Kit</a></li>
+</ul>
+</div>
+<div class="md:col-span-2">
+<h5 class="font-label-caps text-label-caps text-tertiary mb-8 tracking-widest">EXPLORE</h5>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Ecosystem</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Proving Ground</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Governance DAO</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Status</a></li>
+</ul>
+</div>
+<div class="md:col-span-2">
+<h5 class="font-label-caps text-label-caps text-secondary mb-8 tracking-widest">COMPANY</h5>
+<ul class="space-y-4">
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">About</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Terms of Service</a></li>
+<li><a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-sm" href="#">Contact</a></li>
+</ul>
+</div>
+<div class="md:col-span-2 flex flex-col items-end">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 mb-4">
+<span class="w-2 h-2 rounded-full bg-[#00ffd9] animate-pulse"></span>
+<span class="font-label-caps text-[9px] text-[#00ffd9]">HEALTHY</span>
+</div>
+</div>
+</div>
+<div class="px-margin-desktop max-w-container-max mx-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 opacity-40">
+<div class="font-body-sm text-xs">© 2024 Meridian Labs. Built on Arc Foundation.</div>
+<div class="font-mono-data text-xs px-3 py-1 rounded bg-white/5 border border-white/5">0x8a72...92f1</div>
+</div>
+</footer>
+<script>
+        // Reveal animation on scroll
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    // Counter animation trigger
+                    const counters = entry.target.querySelectorAll('.counter');
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-target');
+                        const speed = 200;
+                        const updateCount = () => {
+                            const count = +counter.innerText;
+                            const inc = target / speed;
+                            if (count < target) {
+                                counter.innerText = Math.ceil(count + inc);
+                                setTimeout(updateCount, 1);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        };
+                        updateCount();
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stagger-in').forEach(el => observer.observe(el));
+    </script>
+</body></html>

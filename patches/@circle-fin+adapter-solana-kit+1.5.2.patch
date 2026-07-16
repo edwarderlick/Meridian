@@ -1,0 +1,71 @@
+diff --git a/node_modules/@circle-fin/adapter-solana-kit/next.mjs b/node_modules/@circle-fin/adapter-solana-kit/next.mjs
+index fac588c..52f3114 100644
+--- a/node_modules/@circle-fin/adapter-solana-kit/next.mjs
++++ b/node_modules/@circle-fin/adapter-solana-kit/next.mjs
+@@ -18985,6 +18985,40 @@ enc.encode('used_transfer_spec_hash');
+     };
+ }
+ 
++/**
++ * LOCAL PATCH (via patch-package) — Creates a SetComputeUnitPrice instruction for the Compute
++ * Budget Program. This SDK never builds one anywhere, which means every transaction it submits is
++ * "unpriced". Wallets such as Phantom and Solflare detect that and silently inject their own
++ * priority-fee instruction before signing (permitted by the Wallet Standard spec: "allows...
++ * wallets that use meta-transactions to return a modified, signed transaction"). Circle's own
++ * `createExecute` signs the fee payer and any additional signers (e.g. CCTP's ephemeral message
++ * account, via `collectAdditionalSignatures`) against two SEPARATE compiles of the same intended
++ * message; if the wallet changes the message while signing the fee payer's half, the additional
++ * signer's signature (already computed against the original) no longer matches, and the cluster
++ * rejects the transaction with "Transaction did not pass signature verification" — confirmed
++ * directly via an ED25519 check and a raw-byte before/after comparison during signing. Always
++ * including a price instruction ourselves removes the wallet's reason to modify anything.
++ *
++ * @param microLamports - Price per compute unit, in micro-lamports (must fit in u64).
++ * @returns A `@solana/kit` Instruction for the SetComputeUnitPrice operation.
++ */ function createSetComputeUnitPriceInstruction(microLamports) {
++    const value = BigInt(microLamports);
++    if (value < 0n || value > 0xffffffffffffffffn) {
++        throw createValidationFailedError('computeUnitPrice', microLamports, 'Must be a positive number that fits in u64');
++    }
++    const data = new Uint8Array(9);
++    // Discriminator for SetComputeUnitPrice is 3
++    data[0] = 3;
++    const view = new DataView(data.buffer);
++    view.setBigUint64(1, value, true) // true = little-endian
++    ;
++    return {
++        programAddress: address(COMPUTE_BUDGET_PROGRAM_ID),
++        accounts: [],
++        data
++    };
++}
++
+ // ============================================================================
+ // Helpers
+ // ============================================================================
+@@ -19434,12 +19468,19 @@ enc.encode('used_transfer_spec_hash');
+                 let allInstructions = [
+                     ...kitInstructions
+                 ];
+-                if (input.computeUnitLimit !== undefined) {
+-                    allInstructions = [
+-                        createSetComputeUnitLimitInstruction(input.computeUnitLimit),
+-                        ...allInstructions
+-                    ];
+-                }
++                // LOCAL PATCH (via patch-package) — see createSetComputeUnitPriceInstruction's
++                // docblock. Both instructions must be prepended before signing (not after): the
++                // wallet's decision to modify-and-sign happens inside
++                // partiallySignTransactionMessageWithSigners below, and any additional signers are
++                // compiled from this same instruction list too. Uses `input.computeUnitLimit` when
++                // the caller supplied one (e.g. CCTP builders already pass
++                // CCTP_COMPUTE_UNITS.depositForBurn = 200_000); falls back to that same 200_000
++                // default otherwise, so a limit instruction is always present regardless of caller.
++                allInstructions = [
++                    createSetComputeUnitPriceInstruction(1000n),
++                    createSetComputeUnitLimitInstruction(input.computeUnitLimit ?? 200_000),
++                    ...allInstructions
++                ];
+                 const transactionMessage = maybeCompressWithALTs(pipe(createTransactionMessage({
+                     version: 0
+                 }), (m)=>setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, m), (m)=>setTransactionMessageFeePayerSigner(signer, m), (m)=>appendTransactionMessageInstructions(allInstructions, m)), input.addressLookupTableAccounts);

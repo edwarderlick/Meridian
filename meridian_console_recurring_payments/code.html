@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Recurring Payments</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Hanken+Grotesk:wght@600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .ease-out-cubic {
+            transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .active-nav-border {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #ffaaf6;
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s ease-in-out infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "on-primary-fixed-variant": "#800083",
+                "surface-dim": "#131314",
+                "secondary-fixed-dim": "#d1bcff",
+                "error": "#ffb4ab",
+                "on-tertiary-container": "#002e3a",
+                "surface-container-low": "#1c1b1c",
+                "on-secondary-fixed": "#23005b",
+                "outline-variant": "#554151",
+                "surface-container-highest": "#353436",
+                "primary": "#ffaaf6",
+                "on-primary-fixed": "#380039",
+                "inverse-primary": "#a800ab",
+                "surface-container-lowest": "#0e0e0f",
+                "background": "#131314",
+                "error-container": "#93000a",
+                "on-tertiary-fixed-variant": "#004e60",
+                "tertiary-fixed-dim": "#4cd6ff",
+                "secondary-container": "#7000ff",
+                "surface-tint": "#ffaaf6",
+                "outline": "#a2899c",
+                "primary-fixed-dim": "#ffaaf6",
+                "surface-container-high": "#2a2a2b",
+                "secondary-fixed": "#e9ddff",
+                "on-secondary-fixed-variant": "#5700c9",
+                "primary-container": "#f432f6",
+                "on-secondary-container": "#ddcdff",
+                "on-tertiary-fixed": "#001f28",
+                "on-surface": "#e5e2e3",
+                "surface-bright": "#3a393a",
+                "surface-container": "#201f20",
+                "surface": "#131314",
+                "on-tertiary": "#003543",
+                "on-primary-container": "#4f0051",
+                "on-secondary": "#3c0090",
+                "on-error-container": "#ffdad6",
+                "on-error": "#690005",
+                "on-background": "#e5e2e3",
+                "tertiary-container": "#009dc1",
+                "tertiary": "#4cd6ff",
+                "on-primary": "#5b005d",
+                "inverse-on-surface": "#313031",
+                "inverse-surface": "#e5e2e3",
+                "secondary": "#d1bcff",
+                "tertiary-fixed": "#b7eaff",
+                "surface-variant": "#353436",
+                "primary-fixed": "#ffd7f6",
+                "on-surface-variant": "#dabfd3"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "spacing": {
+                "stack-md": "16px",
+                "margin-desktop": "48px",
+                "gutter": "24px",
+                "margin-mobile": "16px",
+                "container-max": "1440px",
+                "stack-lg": "32px",
+                "stack-sm": "8px"
+              },
+              "fontFamily": {
+                "body-md": ["Inter"],
+                "body-sm": ["Inter"],
+                "label-caps": ["JetBrains Mono"],
+                "mono-data": ["JetBrains Mono"],
+                "headline-xl": ["Hanken Grotesk"],
+                "headline-lg": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            }
+          }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden selection:bg-primary/30">
+<!-- Background Decoration -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+
+<div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-secondary-container/10 blur-[120px]"></div>
+<div class="absolute bottom-[-5%] right-[-5%] w-[30%] h-[30%] rounded-full bg-primary-container/10 blur-[100px]"></div>
+</div>
+<!-- Side Navigation Shell -->
+<aside class="fixed h-full w-64 left-0 top-0 bg-surface/60 backdrop-blur-xl border-r border-white/5 shadow-2xl shadow-secondary/10 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-lg text-[24px] font-bold text-on-surface tracking-tight">Meridian Console</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60 mt-1">Institutional Treasury</p>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-4 opacity-70 group-hover:opacity-100">grid_view</span>
+<span class="text-body-sm">Dashboard</span>
+</a>
+<a class="relative flex items-center px-6 py-3 text-primary font-bold hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-4">account_balance_wallet</span>
+<span class="text-body-sm">Treasury</span>
+<div class="active-nav-border"></div>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-4 opacity-70 group-hover:opacity-100">lock_open</span>
+<span class="text-body-sm">Vaults</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-4 opacity-70 group-hover:opacity-100">auto_awesome</span>
+<span class="text-body-sm">Strategist</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-4 opacity-70 group-hover:opacity-100">insights</span>
+<span class="text-body-sm">Market Watch</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-4 opacity-70 group-hover:opacity-100">verified_user</span>
+<span class="text-body-sm">Compliance</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-1">
+<a class="flex items-center px-4 py-2 text-on-surface-variant font-medium hover:bg-white/5 rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3 text-[20px]">settings</span>
+<span class="text-body-sm">Settings</span>
+</a>
+<div class="p-4 mt-4 glass-panel rounded-xl">
+<button class="w-full py-2 bg-primary text-on-primary-container font-bold rounded-lg text-body-sm hover:brightness-110 transition-all scale-98 active:scale-95">
+                    Connect Strategy
+                </button>
+</div>
+</div>
+</aside>
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center space-x-gutter">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40">search</span>
+<input class="bg-surface-container-low border border-white/5 rounded-full py-2 pl-10 pr-4 text-body-sm w-64 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none" placeholder="Search treasury assets..." type="text"/>
+</div>
+<nav class="hidden lg:flex space-x-8">
+<a class="text-on-surface-variant hover:text-primary transition-all text-body-sm" href="#">Governance</a>
+<a class="text-on-surface-variant hover:text-primary transition-all text-body-sm" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:text-primary transition-all text-body-sm" href="#">Bridge</a>
+</nav>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex space-x-3">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-white/5 transition-all">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+<button class="px-6 py-2 bg-surface-container-high border border-white/10 rounded-full text-body-sm font-medium hover:bg-white/10 transition-all scale-98 active:scale-95">
+                Connect Wallet
+            </button>
+</div>
+</header>
+<!-- Right Side Terminal Panel -->
+<aside class="fixed h-full w-80 right-0 top-0 bg-surface-container-low/40 backdrop-blur-2xl border-l border-white/10 flex flex-col p-6 z-50 overflow-y-auto">
+<div class="flex items-center justify-between mb-8">
+<h2 class="font-label-caps text-label-caps text-tertiary">TERMINAL</h2>
+<div class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></div>
+</div>
+<div class="space-y-gutter">
+<!-- Protocol Health -->
+<section>
+<div class="flex items-center text-tertiary mb-3">
+<span class="material-symbols-outlined text-[18px] mr-2">monitor_heart</span>
+<span class="font-mono-data text-mono-data">PROTOCOL HEALTH</span>
+</div>
+<div class="glass-panel p-4 rounded-xl space-y-3">
+<div class="flex justify-between items-end">
+<span class="text-[10px] text-on-surface-variant uppercase">TVL Stability</span>
+<span class="font-mono-data text-tertiary">99.4%</span>
+</div>
+<div class="h-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[99.4%]"></div>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-[10px] text-on-surface-variant uppercase">APY Efficiency</span>
+<span class="font-mono-data text-tertiary">14.2%</span>
+</div>
+</div>
+</section>
+<!-- Activity Feed -->
+<section>
+<div class="flex items-center text-on-surface-variant mb-3">
+<span class="material-symbols-outlined text-[18px] mr-2">history_edu</span>
+<span class="font-mono-data text-mono-data uppercase">Activity Feed</span>
+</div>
+<div class="space-y-3">
+<div class="p-3 border-l-2 border-primary/30 bg-white/5 rounded-r-lg">
+<p class="text-[11px] text-on-surface leading-tight">Recurring Payment <span class="text-primary">#482</span> executed successfully.</p>
+<span class="text-[9px] text-on-surface-variant/50 font-mono-data mt-1 block">2 MINS AGO</span>
+</div>
+<div class="p-3 border-l-2 border-tertiary/30 bg-white/5 rounded-r-lg">
+<p class="text-[11px] text-on-surface leading-tight">Treasury balance rebalanced: <span class="text-tertiary">+12,400 USDC</span>.</p>
+<span class="text-[9px] text-on-surface-variant/50 font-mono-data mt-1 block">14 MINS AGO</span>
+</div>
+<div class="p-3 border-l-2 border-white/10 bg-white/5 rounded-r-lg">
+<p class="text-[11px] text-on-surface leading-tight">New strategy <span class="text-secondary">"Nebula Alpha"</span> pending approval.</p>
+<span class="text-[9px] text-on-surface-variant/50 font-mono-data mt-1 block">1 HOUR AGO</span>
+</div>
+</div>
+</section>
+<!-- AI Assistant -->
+<section class="mt-auto">
+<div class="bg-tertiary-container/20 p-4 rounded-xl border border-tertiary/20">
+<div class="flex items-center mb-2">
+<span class="material-symbols-outlined text-tertiary text-[18px] mr-2">smart_toy</span>
+<span class="font-mono-data text-mono-data text-tertiary">AI ASSISTANT</span>
+</div>
+<p class="text-[12px] text-tertiary/80 leading-relaxed italic">"Gas fees are currently optimized. Suggesting execution of pending rule #501 now to save 4.2%."</p>
+</div>
+</section>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="pt-32 pb-margin-desktop pl-64 pr-80 min-h-screen">
+<div class="max-w-container-max mx-auto px-margin-desktop">
+<!-- Page Header -->
+<header class="mb-stack-lg flex items-end justify-between">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Recurring Payments</h2>
+<span class="px-2 py-0.5 rounded bg-primary/20 border border-primary/30 text-[10px] font-label-caps text-primary tracking-widest uppercase animate-pulse-subtle">Coming Soon</span>
+</div>
+<p class="text-on-surface-variant max-w-xl">Automate your treasury flows with conditional logic. Set up payroll, service subscriptions, and yield-rebalancing rules on a programmable schedule.</p>
+</div>
+<div class="flex gap-4">
+<div class="text-right">
+<p class="text-label-caps text-[10px] text-on-surface-variant mb-1 uppercase">Automated Volume</p>
+<p class="font-mono-data text-xl text-primary">$4.28M <span class="text-xs text-on-surface-variant/60">/mo</span></p>
+</div>
+</div>
+</header>
+<!-- Grid Layout -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Create Rule Form Panel -->
+<section class="col-span-5">
+<div class="glass-panel p-8 rounded-2xl relative overflow-hidden h-full">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full"></div>
+<h3 class="font-headline-lg text-[20px] mb-6 flex items-center">
+<span class="material-symbols-outlined mr-3 text-primary">add_circle</span>
+                            Create New Rule
+                        </h3>
+<form class="space-y-6">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Recipient Address</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/40 group-focus-within:text-primary transition-colors">wallet</span>
+<input class="w-full bg-surface-container border border-white/10 rounded-xl py-3 pl-11 pr-4 text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="0x... or ENS" type="text"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Amount</label>
+<div class="relative group">
+<input class="w-full bg-surface-container border border-white/10 rounded-xl py-3 pl-4 pr-16 text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="0.00" type="number"/>
+<div class="absolute right-3 top-1/2 -translate-y-1/2 flex items-center space-x-1">
+<div class="w-4 h-4 rounded-full bg-[#2775ca] flex items-center justify-center">
+<span class="text-[8px] font-bold text-white">S</span>
+</div>
+<span class="font-mono-data text-[10px] text-on-surface-variant">USDC</span>
+</div>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Frequency</label>
+<select class="w-full bg-surface-container border border-white/10 rounded-xl py-3 px-4 text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all appearance-none cursor-pointer">
+<option>Every Week</option>
+<option>Every 2 Weeks</option>
+<option>Monthly</option>
+<option>Custom Epoch</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block font-label-caps text-label-caps text-on-surface-variant mb-2 uppercase">Start Date &amp; Time</label>
+<input class="w-full bg-surface-container border border-white/10 rounded-xl py-3 px-4 text-body-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all text-on-surface-variant" type="datetime-local"/>
+</div>
+<div class="pt-4 border-t border-white/5">
+<div class="flex justify-between items-center mb-4">
+<span class="text-body-sm text-on-surface-variant">Estimated Gas Cost</span>
+<span class="font-mono-data text-body-sm text-tertiary">~0.0024 ETH</span>
+</div>
+<button class="w-full py-4 bg-gradient-to-r from-secondary-container to-primary-container text-white font-bold rounded-xl text-body-md shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:brightness-110 transition-all active:scale-[0.98]" type="button">
+                                    Initialize Smart Rule
+                                </button>
+</div>
+</form>
+</div>
+</section>
+<!-- Rules and History Tabs -->
+<div class="col-span-7 space-y-gutter">
+<!-- Active Rules Section -->
+<section class="glass-panel rounded-2xl overflow-hidden">
+<div class="px-8 py-5 border-b border-white/5 flex justify-between items-center">
+<h3 class="font-headline-lg text-[18px]">Active Rules</h3>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-white/5 rounded-md text-[10px] font-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors">Export CSV</button>
+<button class="px-3 py-1 bg-white/5 rounded-md text-[10px] font-label-caps uppercase text-on-surface-variant hover:text-on-surface transition-colors">Filter</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-white/[0.02] border-b border-white/5">
+<tr>
+<th class="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">Recipient</th>
+<th class="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">Amount</th>
+<th class="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">Frequency</th>
+<th class="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider">Next Run</th>
+<th class="px-8 py-4 font-label-caps text-[10px] text-on-surface-variant uppercase tracking-wider text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="group hover:bg-white/[0.02] transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 border border-primary/20">
+<span class="material-symbols-outlined text-[16px] text-primary">person</span>
+</div>
+<div>
+<p class="text-body-sm font-medium">Payroll: Alice.eth</p>
+<p class="text-[10px] text-on-surface-variant/60 font-mono-data">0x4F8...2a1b</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="font-mono-data text-body-sm">4,500.00 <span class="text-[10px] text-on-surface-variant">USDC</span></span>
+</td>
+<td class="px-8 py-5">
+<span class="text-body-sm text-on-surface-variant">Monthly</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex flex-col">
+<span class="text-body-sm">Nov 01, 2023</span>
+<span class="text-[10px] text-on-surface-variant/60">09:00 UTC</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+</tr>
+<tr class="group hover:bg-white/[0.02] transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center mr-3 border border-secondary/20">
+<span class="material-symbols-outlined text-[16px] text-secondary">cloud</span>
+</div>
+<div>
+<p class="text-body-sm font-medium">AWS Cloud Subscription</p>
+<p class="text-[10px] text-on-surface-variant/60 font-mono-data">0x1B2...9c03</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="font-mono-data text-body-sm">820.50 <span class="text-[10px] text-on-surface-variant">USDC</span></span>
+</td>
+<td class="px-8 py-5">
+<span class="text-body-sm text-on-surface-variant">Weekly</span>
+</td>
+<td class="px-8 py-5">
+<div class="flex flex-col">
+<span class="text-body-sm">Oct 24, 2023</span>
+<span class="text-[10px] text-on-surface-variant/60">14:30 UTC</span>
+</div>
+</td>
+<td class="px-8 py-5 text-right">
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Run History Log -->
+<section class="glass-panel rounded-2xl overflow-hidden">
+<div class="px-8 py-5 border-b border-white/5 flex justify-between items-center">
+<h3 class="font-headline-lg text-[18px]">Run History</h3>
+<button class="text-[11px] font-label-caps text-primary hover:underline">View All Log</button>
+</div>
+<div class="p-6 space-y-4">
+<div class="flex items-center justify-between p-4 bg-white/[0.03] rounded-xl border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[20px]" data-weight="fill">check_circle</span>
+</div>
+<div>
+<p class="text-body-sm font-medium">Rule #482: Node Rewards Distribution</p>
+<p class="text-[10px] text-on-surface-variant/60">Success • TX: 0x8a9...f3e2</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-mono-data text-body-sm">12,000.00 USDC</p>
+<p class="text-[10px] text-on-surface-variant/60">Oct 20, 2023</p>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 bg-white/[0.03] rounded-xl border border-white/5">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[20px]" data-weight="fill">check_circle</span>
+</div>
+<div>
+<p class="text-body-sm font-medium">Rule #391: Legal Retainer</p>
+<p class="text-[10px] text-on-surface-variant/60">Success • TX: 0x4d1...2a8b</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-mono-data text-body-sm">2,500.00 USDC</p>
+<p class="text-[10px] text-on-surface-variant/60">Oct 15, 2023</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<!-- Coming Soon Visualization (Bento Style) -->
+<section class="mt-gutter grid grid-cols-12 gap-gutter">
+<div class="col-span-12">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant mb-6 uppercase text-center opacity-40">Coming Soon to Console v2.0</h4>
+</div>
+<div class="col-span-4 glass-panel p-6 rounded-2xl group hover:border-primary/40 transition-all">
+<div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary">dynamic_form</span>
+</div>
+<h5 class="font-headline-lg text-[16px] mb-2">Conditional Flows</h5>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">Trigger payments based on chain events, gas price floors, or Oracle price feeds.</p>
+</div>
+<div class="col-span-4 glass-panel p-6 rounded-2xl group hover:border-secondary/40 transition-all">
+<div class="w-12 h-12 bg-secondary/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary">groups</span>
+</div>
+<h5 class="font-headline-lg text-[16px] mb-2">Multi-Sig Integration</h5>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">Require m-of-n approvals for rule creation or high-value recurring executions.</p>
+</div>
+<div class="col-span-4 glass-panel p-6 rounded-2xl group hover:border-tertiary/40 transition-all">
+<div class="w-12 h-12 bg-tertiary/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-tertiary">data_thresholding</span>
+</div>
+<h5 class="font-headline-lg text-[16px] mb-2">Budget Guardrails</h5>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">Set daily, weekly, or monthly hard caps on automated outflows per rule.</p>
+</div>
+</section>
+</div>
+</main>
+<!-- Floating Action Interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputs = document.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.parentElement.closest('.glass-panel').classList.add('border-primary/30');
+                });
+                input.addEventListener('blur', () => {
+                    input.parentElement.closest('.glass-panel').classList.remove('border-primary/30');
+                });
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Swap</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Hanken+Grotesk:wght@600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+        }
+        body {
+            background-color: #131314;
+            color: #e5e2e3;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .vibrant-gradient {
+            background: linear-gradient(135deg, #ffaaf6 0%, #f432f6 100%);
+        }
+        .vibrant-gradient:hover {
+            filter: brightness(1.1);
+        }
+        .inner-glow-stroke {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-clip: padding-box;
+        }
+        .animate-ease-out {
+            transition: all 200ms var(--ease-out-cubic);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#800083",
+                        "surface-dim": "#131314",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#002e3a",
+                        "surface-container-low": "#1c1b1c",
+                        "on-secondary-fixed": "#23005b",
+                        "outline-variant": "#554151",
+                        "surface-container-highest": "#353436",
+                        "primary": "#ffaaf6",
+                        "on-primary-fixed": "#380039",
+                        "inverse-primary": "#a800ab",
+                        "surface-container-lowest": "#0e0e0f",
+                        "background": "#131314",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "tertiary-fixed-dim": "#4cd6ff",
+                        "secondary-container": "#7000ff",
+                        "surface-tint": "#ffaaf6",
+                        "outline": "#a2899c",
+                        "primary-fixed-dim": "#ffaaf6",
+                        "surface-container-high": "#2a2a2b",
+                        "secondary-fixed": "#e9ddff",
+                        "on-secondary-fixed-variant": "#5700c9",
+                        "primary-container": "#f432f6",
+                        "on-secondary-container": "#ddcdff",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-surface": "#e5e2e3",
+                        "surface-bright": "#3a393a",
+                        "surface-container": "#201f20",
+                        "surface": "#131314",
+                        "on-tertiary": "#003543",
+                        "on-primary-container": "#4f0051",
+                        "on-secondary": "#3c0090",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-background": "#e5e2e3",
+                        "tertiary-container": "#009dc1",
+                        "tertiary": "#4cd6ff",
+                        "on-primary": "#5b005d",
+                        "inverse-on-surface": "#313031",
+                        "inverse-surface": "#e5e2e3",
+                        "secondary": "#d1bcff",
+                        "tertiary-fixed": "#b7eaff",
+                        "surface-variant": "#353436",
+                        "primary-fixed": "#ffd7f6",
+                        "on-surface-variant": "#dabfd3"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "mono-data": ["JetBrains Mono"],
+                        "headline-xl": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary selection:text-on-primary-container overflow-hidden">
+<!-- Background Atmospheric Effects -->
+<div class="fixed inset-0 pointer-events-none z-0">
+
+<div class="absolute top-1/4 -left-64 w-[600px] h-[600px] bg-secondary/10 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-1/4 -right-64 w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full"></div>
+</div>
+<!-- Side Navigation Shell -->
+<aside class="fixed h-full w-64 left-0 top-0 bg-surface/60 backdrop-blur-xl border-r border-white/5 shadow-2xl shadow-secondary/10 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface">Meridian Console</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant/60">Institutional Treasury</p>
+</div>
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary">grid_view</span>
+<span class="font-body-md text-body-md">Dashboard</span>
+</a>
+<!-- Active State: Treasury (Nearest to Swap functionality) -->
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-2 border-primary bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-body-md text-body-md">Treasury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">lock_open</span>
+<span class="font-body-md text-body-md">Vaults</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-body-md text-body-md">Strategist</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-body-md text-body-md">Market Watch</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md text-body-md">Compliance</span>
+</a>
+</nav>
+<div class="px-4 pt-4 mt-auto border-t border-white/5">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md text-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-body-md text-body-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Top Bar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] bg-background/80 backdrop-blur-md border-b border-white/5 h-20 flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-6">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-sm text-body-sm" href="#">Governance</a>
+<a class="text-on-surface-variant hover:text-primary transition-all font-body-sm text-body-sm" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:text-primary transition-all font-body-sm text-body-sm" href="#">Bridge</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2 rounded-full border border-primary text-primary font-label-caps text-label-caps hover:bg-primary/10 transition-all active:scale-95">
+                Connect Wallet
+            </button>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Right Side Rail (Terminal) -->
+<aside class="fixed h-full w-80 right-0 top-0 bg-surface-container-low/40 backdrop-blur-2xl border-l border-white/10 shadow-[-20px_0_40px_rgba(112,0,255,0.05)] flex flex-col p-6 z-30">
+<div class="mb-8 flex items-center justify-between">
+<span class="font-label-caps text-label-caps text-tertiary">Terminal</span>
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+</div>
+<div class="space-y-6 flex-1 overflow-y-auto pr-2">
+<!-- Health Gauge -->
+<div class="glass-card p-4 rounded-xl">
+<div class="flex justify-between items-center mb-3">
+<span class="font-label-caps text-label-caps text-on-surface-variant/60">Protocol Health</span>
+<span class="font-mono-data text-mono-data text-tertiary">99.8%</span>
+</div>
+<div class="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-[99.8%]"></div>
+</div>
+</div>
+<!-- AI Activity Feed -->
+<div class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm">smart_toy</span>
+<span class="font-label-caps text-label-caps text-on-surface-variant">AI Insights</span>
+</div>
+<div class="space-y-3">
+<div class="text-body-sm font-mono-data text-on-surface-variant/80 bg-white/5 p-3 rounded-lg border-l-2 border-tertiary">
+                        Optimal liquidity route found via Cetus v2. Estimating 0.02% slippage reduction.
+                    </div>
+<div class="text-body-sm font-mono-data text-on-surface-variant/80 bg-white/5 p-3 rounded-lg">
+                        USDC vault utilization is at 84%. Consider rebalancing to Vault B for higher APY.
+                    </div>
+</div>
+</div>
+</div>
+<!-- Terminal Nav -->
+<nav class="mt-auto pt-6 space-y-2">
+<button class="w-full flex items-center gap-3 px-4 py-3 bg-tertiary-container/20 text-tertiary rounded-lg font-mono-data text-mono-data">
+<span class="material-symbols-outlined">smart_toy</span> AI Assistant
+            </button>
+<button class="w-full flex items-center gap-3 px-4 py-3 text-on-surface-variant/60 hover:bg-white/5 transition-all rounded-lg font-mono-data text-mono-data">
+<span class="material-symbols-outlined">history_edu</span> Activity Feed
+            </button>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mr-80 pt-28 pb-12 px-12 overflow-y-auto h-screen scrollbar-hide">
+<!-- Arc-Testnet Banner -->
+<div class="mb-8 animate-ease-out">
+<div class="bg-tertiary/10 border border-tertiary/20 px-6 py-3 rounded-xl flex items-center justify-between backdrop-blur-md">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary animate-pulse">info</span>
+<p class="font-body-sm text-body-sm text-tertiary">Notice: You are currently on <span class="font-bold">Arc-Testnet-only</span>. These assets are for testing purposes and have no real-world value.</p>
+</div>
+<button class="text-tertiary hover:opacity-70">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+<div class="max-w-xl mx-auto space-y-8">
+<!-- Swap Section -->
+<section class="glass-card p-6 rounded-3xl border-t-white/10 shadow-2xl relative">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-lg text-2xl font-bold">Swap Assets</h2>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-on-surface-variant hover:text-primary animate-ease-out">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+<button class="w-10 h-10 rounded-xl glass-card flex items-center justify-center text-on-surface-variant hover:text-primary animate-ease-out">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+<!-- From Panel -->
+<div class="bg-white/5 p-5 rounded-2xl border border-white/5 mb-2 focus-within:border-primary/40 transition-all">
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant/60">Pay</label>
+<span class="font-label-caps text-[10px] text-on-surface-variant/40">Balance: 12,450.00 USDC</span>
+</div>
+<div class="flex justify-between items-center">
+<input class="bg-transparent border-none focus:ring-0 p-0 font-headline-xl text-3xl w-full text-on-surface placeholder:text-on-surface-variant/20" type="text" value="1,000.00"/>
+<button class="flex items-center gap-2 bg-surface p-2 pr-4 rounded-full border border-white/10 hover:bg-surface-container transition-colors group">
+<div class="w-8 h-8 rounded-full bg-tertiary-container/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Close-up photograph of a metallic silver USDC coin icon with deep blue accents, presented in a minimalist high-tech 3D render style with soft glassmorphism reflections and premium studio lighting against an obsidian background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxvdZ46V3T1pDSXCTkMp1y6l8geyXMDdYAD_r1zSaL_OeMa7q_MbrcMssdRhwtsRlu2YLlwrnR6cbX9cNpAPdhWtZgViAZAiz1D6qiANryVtUntRNQzd_N_3PI7IFYMlcbMXK8hBjPi4djtNebcn7I1rJlTOlrcuFuwy_ihlAEIGJr75kE6XYDg_U3GL-6uw0mU1sWiOEOYd9RiK_KMLZjXo-1te5Z0GcGIaWZ-gFeZqaROmO-HO1s_-rcWexc4kqN9e5DewWxb7o"/>
+</div>
+<span class="font-bold font-body-md">USDC</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant/60 group-hover:text-on-surface">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Swap Connector Icon -->
+<div class="relative h-4 z-10 flex justify-center">
+<button class="absolute -top-4 w-10 h-10 rounded-xl bg-surface border border-white/10 flex items-center justify-center text-primary hover:rotate-180 transition-transform duration-500 shadow-xl">
+<span class="material-symbols-outlined">south</span>
+</button>
+</div>
+<!-- To Panel -->
+<div class="bg-white/5 p-5 rounded-2xl border border-white/5 focus-within:border-primary/40 transition-all">
+<div class="flex justify-between items-center mb-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant/60">Receive</label>
+<span class="font-label-caps text-[10px] text-on-surface-variant/40">Balance: 0.00 SUI</span>
+</div>
+<div class="flex justify-between items-center">
+<input class="bg-transparent border-none focus:ring-0 p-0 font-headline-xl text-3xl w-full text-on-surface placeholder:text-on-surface-variant/20" placeholder="0.00" readonly="" type="text"/>
+<button class="flex items-center gap-2 bg-surface p-2 pr-4 rounded-full border border-white/10 hover:bg-surface-container transition-colors group">
+<div class="w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic digital representation of the SUI blockchain token icon, featuring abstract blue and purple liquid-like shapes, encased in a polished glass sphere with elegant chrome edges and soft ambient glow in a high-fidelity institutional design style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-geYwA3iOeliM35b32m1BSBmpJx5AuyypkA08TKw-nsLZhtGz41hqOG7_6ERrDfeuAlyPOM4Kz_Gee5RdBfS61Fe8OoPzCVOYiA8h9pgXHEvjUQQd3Fkhp40PIddI8X9QUQRBqcu_ApR2M39bHezcFFhUgA0DwxVeoGnPkqlXDb0o23YcehCYaP5_4BkhqOkrtEfFHRMFuER1jyPB0p4ZtMPk-sgGeRvYgmpOcw13-__uuW5J8U_zhVGAs-6ApRHAPJN1dVLQGJY"/>
+</div>
+<span class="font-bold font-body-md">SUI</span>
+<span class="material-symbols-outlined text-sm text-on-surface-variant/60 group-hover:text-on-surface">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Info Table -->
+<div class="mt-6 space-y-2">
+<div class="flex justify-between text-body-sm font-body-sm text-on-surface-variant/60">
+<span>Rate</span>
+<span class="font-mono-data text-on-surface">1 USDC ≈ 0.8421 SUI</span>
+</div>
+<div class="flex justify-between text-body-sm font-body-sm text-on-surface-variant/60">
+<span>Price Impact</span>
+<span class="text-green-400">&lt; 0.01%</span>
+</div>
+<div class="flex justify-between text-body-sm font-body-sm text-on-surface-variant/60">
+<span>Slippage Tolerance</span>
+<span class="font-mono-data">0.5%</span>
+</div>
+</div>
+<button class="vibrant-gradient w-full py-5 rounded-2xl mt-8 font-headline-lg text-lg text-on-primary-container font-extrabold shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform">
+                    Swap
+                </button>
+</section>
+<!-- Price Reference Table -->
+<section class="glass-card rounded-3xl overflow-hidden">
+<div class="px-6 py-4 border-b border-white/5">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant">Market Reference</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="font-label-caps text-[10px] text-on-surface-variant/40 border-b border-white/5">
+<th class="px-6 py-4 font-bold uppercase tracking-wider">Asset</th>
+<th class="px-6 py-4 font-bold uppercase tracking-wider text-right">Price</th>
+<th class="px-6 py-4 font-bold uppercase tracking-wider text-right">24h Change</th>
+<th class="px-6 py-4 font-bold uppercase tracking-wider">Last 24h</th>
+</tr>
+</thead>
+<tbody class="font-body-sm divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-secondary-container/30"></div>
+<span class="font-bold">SUI</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-mono-data">$1.187</td>
+<td class="px-6 py-4 text-right">
+<span class="text-green-400 font-mono-data">+4.2%</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-8">
+<!-- Mini Sparkline Placeholder -->
+<svg class="w-full h-full text-green-400 stroke-current fill-none stroke-2" viewbox="0 0 100 30">
+<path d="M0,25 Q10,15 20,20 T40,10 T60,18 T80,5 T100,15" stroke-linecap="round"></path>
+</svg>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-tertiary-container/30"></div>
+<span class="font-bold">USDT</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-mono-data">$0.999</td>
+<td class="px-6 py-4 text-right">
+<span class="text-on-surface-variant/40 font-mono-data">0.0%</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-8">
+<svg class="w-full h-full text-on-surface-variant/40 stroke-current fill-none stroke-2" viewbox="0 0 100 30">
+<path d="M0,15 L100,15" stroke-linecap="round"></path>
+</svg>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full bg-primary-container/30"></div>
+<span class="font-bold">wBTC</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-mono-data">$64,241</td>
+<td class="px-6 py-4 text-right">
+<span class="text-error font-mono-data">-1.8%</span>
+</td>
+<td class="px-6 py-4">
+<div class="w-24 h-8">
+<svg class="w-full h-full text-error stroke-current fill-none stroke-2" viewbox="0 0 100 30">
+<path d="M0,5 Q10,25 20,15 T40,25 T60,5 T80,20 T100,28" stroke-linecap="round"></path>
+</svg>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<script>
+        // Micro-interactions for input fields
+        const inputs = document.querySelectorAll('input[type="text"]');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('border-primary/40');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('border-primary/40');
+            });
+        });
+
+        // Simple mock behavior for the swap button
+        const swapBtn = document.querySelector('.vibrant-gradient');
+        swapBtn.addEventListener('click', () => {
+            const originalText = swapBtn.innerText;
+            swapBtn.innerText = 'Processing...';
+            swapBtn.classList.add('opacity-80');
+            
+            setTimeout(() => {
+                swapBtn.innerText = 'Swap Success!';
+                swapBtn.classList.replace('vibrant-gradient', 'bg-green-500');
+                
+                setTimeout(() => {
+                    swapBtn.innerText = originalText;
+                    swapBtn.classList.replace('bg-green-500', 'vibrant-gradient');
+                    swapBtn.classList.remove('opacity-80');
+                }, 2000);
+            }, 1500);
+        });
+    </script>
+</body></html>

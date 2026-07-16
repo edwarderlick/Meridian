@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Unified Balance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Hanken+Grotesk:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#800083",
+                    "surface-dim": "#131314",
+                    "secondary-fixed-dim": "#d1bcff",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#002e3a",
+                    "surface-container-low": "#1c1b1c",
+                    "on-secondary-fixed": "#23005b",
+                    "outline-variant": "#554151",
+                    "surface-container-highest": "#353436",
+                    "primary": "#ffaaf6",
+                    "on-primary-fixed": "#380039",
+                    "inverse-primary": "#a800ab",
+                    "surface-container-lowest": "#0e0e0f",
+                    "background": "#131314",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#4cd6ff",
+                    "secondary-container": "#7000ff",
+                    "surface-tint": "#ffaaf6",
+                    "outline": "#a2899c",
+                    "primary-fixed-dim": "#ffaaf6",
+                    "surface-container-high": "#2a2a2b",
+                    "secondary-fixed": "#e9ddff",
+                    "on-secondary-fixed-variant": "#5700c9",
+                    "primary-container": "#f432f6",
+                    "on-secondary-container": "#ddcdff",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-surface": "#e5e2e3",
+                    "surface-bright": "#3a393a",
+                    "surface-container": "#201f20",
+                    "surface": "#131314",
+                    "on-tertiary": "#003543",
+                    "on-primary-container": "#4f0051",
+                    "on-secondary": "#3c0090",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "on-background": "#e5e2e3",
+                    "tertiary-container": "#009dc1",
+                    "tertiary": "#4cd6ff",
+                    "on-primary": "#5b005d",
+                    "inverse-on-surface": "#313031",
+                    "inverse-surface": "#e5e2e3",
+                    "secondary": "#d1bcff",
+                    "tertiary-fixed": "#b7eaff",
+                    "surface-variant": "#353436",
+                    "primary-fixed": "#ffd7f6",
+                    "on-surface-variant": "#dabfd3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "margin-desktop": "48px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "container-max": "1440px",
+                    "stack-lg": "32px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-caps": ["JetBrains Mono"],
+                    "mono-data": ["JetBrains Mono"],
+                    "headline-xl": ["Hanken Grotesk"],
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                    "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #131314;
+            color: #e5e2e3;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 170, 246, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .violet-glow {
+            filter: drop-shadow(0 0 15px rgba(112, 0, 255, 0.4));
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .ease-out-cubic {
+            transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+        }
+
+        .nav-item-active {
+            color: #ffaaf6;
+            font-weight: 700;
+            border-right: 2px solid #ffaaf6;
+        }
+
+        .inner-glow-stroke {
+            border: 1px solid transparent;
+            background: linear-gradient(#1c1b1c, #1c1b1c) padding-box,
+                        linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.02)) border-box;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md antialiased">
+<!-- Global Background Elements -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+
+<div class="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-secondary-container/10 rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]"></div>
+</div>
+<!-- Persistent Shell: SideNavBar -->
+<aside class="fixed h-full w-64 left-0 top-0 bg-surface/60 backdrop-blur-xl border-r border-white/5 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-lg text-[20px] font-bold text-on-surface leading-none">Meridian</h1>
+<p class="font-label-caps text-[10px] text-on-surface-variant mt-1 opacity-60">Institutional Treasury</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Dashboard maps to active balance screen -->
+<a class="flex items-center gap-4 px-6 py-3 text-primary font-bold border-r-2 border-primary hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body-md">Treasury</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">lock_open</span>
+<span class="font-body-md">Vaults</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-body-md">Strategist</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-body-md">Market Watch</span>
+</a>
+<a class="flex items-center gap-4 px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md">Compliance</span>
+</a>
+</nav>
+<div class="mt-auto px-6 space-y-4">
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container font-bold rounded-xl flex items-center justify-center gap-2 hover:brightness-110 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">bolt</span>
+                Connect Strategy
+            </button>
+<div class="pt-6 border-t border-white/5 space-y-1">
+<a class="flex items-center gap-4 py-2 text-on-surface-variant/70 hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-body-sm">Settings</span>
+</a>
+<a class="flex items-center gap-4 py-2 text-on-surface-variant/70 hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help_outline</span>
+<span class="font-body-sm">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-12 z-40">
+<div class="flex items-center gap-12">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="bg-surface-container-low/50 border-none rounded-full pl-10 pr-4 py-2 text-body-sm w-64 focus:ring-1 focus:ring-primary/40 transition-all outline-none" placeholder="Global search..." type="text"/>
+</div>
+<nav class="flex gap-8">
+<a class="font-body-sm text-on-surface-variant hover:text-primary transition-all" href="#">Governance</a>
+<a class="font-body-sm text-primary font-bold border-b-2 border-primary pb-1" href="#">Analytics</a>
+<a class="font-body-sm text-on-surface-variant hover:text-primary transition-all" href="#">Bridge</a>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-on-surface">notifications</button>
+<div class="h-8 w-px bg-white/10 mx-2"></div>
+<div class="flex items-center gap-3 bg-surface-container-high/40 px-3 py-1.5 rounded-full border border-white/5 cursor-pointer hover:bg-surface-container-high/60 transition-all">
+<div class="w-7 h-7 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic professional avatar for a tech-focused treasury executive. The person is silhouetted against a vibrant, purple and pink neon-lit digital cityscape. The overall mood is high-tech, cinematic, and professional, maintaining a clean glassmorphic aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBef9s584u5jDcCvdl-pKPjdK4_Hqg-s6HtYjgMO8IjGuXJRI7JpqeFGOIKVaRD6Wc9NExa3EPv5dmpz57R2cJxjvmvZupbHamjx2NxjNk1QJsYHWQRNa6nKp9nPb-CcWkw0om0-Tl_KvisCMuJqfshJprKaBYEwZyA88YPk0SK3JMTWVfFlKARNRlFqO8jqX8egfQGLhcIfFzjc9HhZSkM9H_tA2aL1mSPwY0ia6r3XrhbYykysTo2dKc5oREghg5XzkjChd9EUtg"/>
+</div>
+<span class="font-mono-data text-body-sm text-on-surface">0x71...C9E4</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-12 min-h-screen relative z-10">
+<div class="max-w-[1200px] mx-auto space-y-gutter">
+<!-- Aggregated Balance Header Card -->
+<section class="glass-card rounded-[32px] p-10 relative overflow-hidden group">
+<div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/10 rounded-full blur-[80px] group-hover:bg-primary/20 transition-all duration-700"></div>
+<div class="relative z-10 flex flex-col md:flex-row justify-between items-end md:items-center">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="font-label-caps text-on-surface-variant opacity-60 tracking-widest uppercase">Unified Total Balance</span>
+<span class="px-2 py-0.5 rounded bg-tertiary-container/20 text-tertiary font-mono-data text-[10px] border border-tertiary/20">LIVE SYNC</span>
+</div>
+<h2 class="font-headline-xl text-on-surface tracking-tighter flex items-baseline gap-3">
+<span class="opacity-40 text-[32px]">$</span>
+<span class="text-[64px] font-extrabold text-white violet-glow">12,842,910.45</span>
+</h2>
+<div class="flex items-center gap-4 mt-6">
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+<span class="font-mono-data text-body-md">+4.2%</span>
+<span class="text-on-surface-variant opacity-40 text-body-sm font-body-sm">24h</span>
+</div>
+<div class="h-4 w-px bg-white/10"></div>
+<div class="text-on-surface-variant font-body-sm">
+<span class="opacity-50">Locked Value:</span> <span class="font-mono-data text-white">$8.2M</span>
+</div>
+</div>
+</div>
+<div class="mt-8 md:mt-0 flex gap-4">
+<button class="h-14 px-8 rounded-2xl bg-white text-background font-bold flex items-center gap-2 hover:bg-primary transition-all active:scale-95">
+<span class="material-symbols-outlined">add_circle</span>
+                            Deposit
+                        </button>
+<button class="h-14 px-8 rounded-2xl glass-card border-white/20 text-white font-bold flex items-center gap-2 hover:bg-white/10 transition-all active:scale-95">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+                            Withdraw
+                        </button>
+</div>
+</div>
+</section>
+<!-- Middle Layout: Tabs and Chain Breakdown -->
+<div class="grid grid-cols-12 gap-gutter items-start">
+<!-- Deposit/Withdraw Interactive Panels -->
+<div class="col-span-12 lg:col-span-7 space-y-gutter">
+<div class="glass-card rounded-3xl p-2 flex gap-1">
+<button class="flex-1 py-3 font-bold rounded-2xl transition-all duration-300 bg-primary/20 text-primary border border-primary/20" id="tab-deposit" onclick="toggleTab('deposit')">Deposit Asset</button>
+<button class="flex-1 py-3 font-bold rounded-2xl transition-all duration-300 text-on-surface-variant hover:text-on-surface" id="tab-withdraw" onclick="toggleTab('withdraw')">Withdrawal Request</button>
+</div>
+<div class="glass-card rounded-[32px] p-8 transition-all duration-500 ease-out-cubic" id="panel-deposit">
+<div class="space-y-6">
+<h3 class="font-headline-lg text-[24px] text-white">Initiate Secure Deposit</h3>
+<div class="space-y-2">
+<label class="font-label-caps text-on-surface-variant/60 ml-2">Select Asset</label>
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/20 transition-all cursor-pointer">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-tertiary">attach_money</span>
+</div>
+<div>
+<p class="font-bold text-white leading-tight">USDC</p>
+<p class="text-body-sm text-on-surface-variant/60">USD Coin (Circle)</p>
+</div>
+</div>
+<span class="material-symbols-outlined opacity-40">expand_more</span>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-on-surface-variant/60 ml-2">Amount</label>
+<div class="relative">
+<input class="w-full h-20 bg-white/5 border border-white/5 rounded-2xl px-6 text-[32px] font-mono-data text-white placeholder:text-white/10 focus:ring-2 focus:ring-primary/40 focus:border-transparent outline-none transition-all" placeholder="0.00" type="text"/>
+<div class="absolute right-6 top-1/2 -translate-y-1/2 flex gap-2">
+<button class="px-3 py-1 rounded-lg bg-primary/10 border border-primary/20 text-primary font-label-caps text-[10px] hover:bg-primary/20">MAX</button>
+<span class="font-mono-data text-on-surface-variant/40 self-center">USDC</span>
+</div>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-secondary-container/5 border border-secondary-container/10 flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">info</span>
+<p class="text-body-sm text-on-surface-variant/80">Funds will be automatically routed to the **Optimal Yield Vault** across 4 L2 chains to maximize capital efficiency.</p>
+</div>
+<button class="w-full h-16 rounded-2xl bg-gradient-to-r from-primary to-secondary-container text-white font-bold text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                                Execute Deposit Sequence
+                            </button>
+</div>
+</div>
+<div class="hidden glass-card rounded-[32px] p-8 transition-all duration-500 ease-out-cubic" id="panel-withdraw">
+<div class="space-y-6">
+<h3 class="font-headline-lg text-[24px] text-white">Unwind Position</h3>
+<div class="p-6 rounded-2xl bg-error/5 border border-error/10 flex items-center gap-4">
+<span class="material-symbols-outlined text-error text-[32px]">warning</span>
+<p class="text-body-sm text-on-surface-variant">Standard withdrawal requests have a **24-hour cooldown** for security validation. Fast-exit options incur a 0.25% fee.</p>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Available for instant exit:</span>
+<span class="font-mono-data text-white">$241,090.12</span>
+</div>
+<div class="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-2/3"></div>
+</div>
+</div>
+<button class="w-full h-16 rounded-2xl border border-white/20 text-white font-bold text-lg hover:bg-white/5 transition-all">
+                                Request Standard Withdrawal
+                            </button>
+</div>
+</div>
+</div>
+<!-- Breakdown by Chain List -->
+<div class="col-span-12 lg:col-span-5 space-y-gutter">
+<div class="glass-card rounded-[32px] overflow-hidden">
+<div class="p-8 border-b border-white/5 flex justify-between items-center">
+<h3 class="font-headline-lg text-[20px] text-white">Chain Allocation</h3>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-white transition-all">refresh</button>
+</div>
+<div class="p-2">
+<div class="space-y-1">
+<!-- Chain Item 1 -->
+<div class="flex items-center justify-between p-6 rounded-[24px] hover:bg-white/5 transition-all group cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-[#627EEA]/10 border border-[#627EEA]/20 flex items-center justify-center">
+<img class="w-6 h-6 object-contain" data-alt="The Ethereum network logo as a clean, 3D crystalline prism icon. It glows with a deep blue ethereal light against a dark obsidian background, reflecting a professional and secure blockchain identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3295npz0abFCrwYso4yAXHk4qFsa8qpY_LpEP_wrGKczBi21klSLUcbrAN_-QDjbVqmca8ia4UpydixWChdwvc8eYahfx9BqhE_r60k9sNCokYJ1DzX5qnXPN6M_bdIY4_isz2J-qqkIV2Vg4gKojkvc5bXSMvO05P_RxbpsDtZu-TJA0FoS5pCcmgk8IA5PXZQRGTXGdl-Br2aZ3TD152y5tUhx5iQHWYZpym65h5nNSXHh8FZiTpVdmYWMuh_0vaA_xjfIwbzo"/>
+</div>
+<div>
+<p class="font-bold text-white">Ethereum Mainnet</p>
+<p class="text-label-caps text-on-surface-variant/40 text-[10px]">LAYER 1</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-mono-data text-white text-[16px]">$6,241,090</p>
+<p class="text-body-sm text-primary font-mono-data">48.6%</p>
+</div>
+</div>
+<!-- Chain Item 2 -->
+<div class="flex items-center justify-between p-6 rounded-[24px] hover:bg-white/5 transition-all group cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-[#28A0F0]/10 border border-[#28A0F0]/20 flex items-center justify-center">
+<img class="w-6 h-6 object-contain" data-alt="A high-fidelity 3D rendering of the Arbitrum rollup logo. A bright blue circular motif with white accents, rendered with glossy textures and a soft neon glow that fits a premium fintech dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDClrsCNadXXfjic-XPw1JVuAGsg3gRB8d1XAmefXa93eaZNJCpBQKf9v5xmnwLOcJXQExX_b4ZjB3UKeOtZooHChwrtLFqrg1-05lWdLeSyxkgGGukqIrW4HGIklwIhA4SZR302R2jW6Hj4mlyrXvdMKTel5LV739cvndpGZfHlaCw0DiGnuFeihYToJc6IcFX0IbZUIeJuJYRcMuWlDTN38n89b2lSVVgG52b-tB3MHk_7FMdaWbztzgKNE2-EHyvwqobGBYE6W0"/>
+</div>
+<div>
+<p class="font-bold text-white">Arbitrum One</p>
+<p class="text-label-caps text-on-surface-variant/40 text-[10px]">ROLLUP</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-mono-data text-white text-[16px]">$3,102,442</p>
+<p class="text-body-sm text-on-surface-variant font-mono-data">24.2%</p>
+</div>
+</div>
+<!-- Chain Item 3 -->
+<div class="flex items-center justify-between p-6 rounded-[24px] hover:bg-white/5 transition-all group cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-[#8247E5]/10 border border-[#8247E5]/20 flex items-center justify-center">
+<img class="w-6 h-6 object-contain" data-alt="The Polygon Matic logo reimagined as a 3D translucent violet crystal. Sharp geometric edges with inner glowing gradients of purple and pink, presented in a minimal and sophisticated style for an institutional platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7wuu_hhOHrHS_2u9DlvfSeBFP5V6YZdTop3of5aKCiGpXaCzSjohhFtmvdzOC_M__4qUfFGioQbEsdvQkM5s9eYq5ur1Ji1fwWASJhHCvqPqfK91khGeK70p6wVDLKm8TJdESEPVa-jRddo5McnaKZwMJura-a9OvVOpzUw9w_LA7OZ8TVPx6J6Rxxy30mGxYbgTqka6ZgdTscjnEIU1iHNjFXDHlCmE5ATB6il45Kbk5RM18mFWuAqAPMoD3szM1_MAlx4u9obY"/>
+</div>
+<div>
+<p class="font-bold text-white">Polygon PoS</p>
+<p class="text-label-caps text-on-surface-variant/40 text-[10px]">SIDECHAIN</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-mono-data text-white text-[16px]">$2,110,880</p>
+<p class="text-body-sm text-on-surface-variant font-mono-data">16.4%</p>
+</div>
+</div>
+<!-- Chain Item 4 -->
+<div class="flex items-center justify-between p-6 rounded-[24px] hover:bg-white/5 transition-all group cursor-default">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-2xl bg-[#FF0420]/10 border border-[#FF0420]/20 flex items-center justify-center">
+<img class="w-6 h-6 object-contain" data-alt="A sleek, minimalist 3D rendering of the Optimism network logo. A vibrant red circle icon with professional lighting and subtle shadow play, designed for a dark-themed institutional crypto treasury interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbtQhM9eAuYTMT43S4dGmYgqVIHm8oUTka21UJYY_rvYUDbpNHg6708PwXmV6OEcrx0yVZ0SmnSalmlhL5958zvDd3hhOqjfSnVr2-0Nc2h586pSCYf2Y7wwVUOTxO2k4_JUt9otag5AWTELvVlh5OBKkliTDvFNBpXBKuU4y09X2mgFh-NGshewOYQlC9UP9Xx2XXjvEfnbUbr2WRlBbobUpfHDC0u-8vMSSufUhH9mQ7SZJfgLhlBFIq5fjkgYI0i-djqTudykA"/>
+</div>
+<div>
+<p class="font-bold text-white">Optimism</p>
+<p class="text-label-caps text-on-surface-variant/40 text-[10px]">ROLLUP</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-mono-data text-white text-[16px]">$1,388,498</p>
+<p class="text-body-sm text-on-surface-variant font-mono-data">10.8%</p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-white/[0.02] flex items-center justify-center">
+<button class="text-label-caps text-primary hover:tracking-widest transition-all">VIEW ALL LIQUIDITY SOURCES</button>
+</div>
+</div>
+<!-- Market Insights Mini Card -->
+<div class="glass-card rounded-[32px] p-6 border-l-4 border-l-tertiary">
+<div class="flex gap-4">
+<div class="p-3 rounded-xl bg-tertiary/10 text-tertiary h-fit">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<div>
+<h4 class="font-bold text-white mb-1">Optimizing Yield...</h4>
+<p class="text-body-sm text-on-surface-variant leading-relaxed">Strategist AI has identified a 2.4% APR increase potential by migrating 15% of USDC liquidity to Arbitrum vaults.</p>
+<button class="mt-4 text-tertiary font-bold text-body-sm flex items-center gap-1 group">
+                                    Rebalance Now
+                                    <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Terminal Sidebar (AI Assistant) -->
+<aside class="fixed h-full w-80 right-0 top-0 bg-surface-container-low/40 backdrop-blur-2xl border-l border-white/10 flex flex-col p-6 z-50">
+<div class="flex items-center justify-between mb-8">
+<span class="font-label-caps text-tertiary flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+                TERMINAL v2.4
+            </span>
+<button class="material-symbols-outlined text-on-surface-variant text-[20px]">more_horiz</button>
+</div>
+<div class="flex-1 space-y-6 overflow-y-auto pr-2 scrollbar-hide">
+<!-- AI Message -->
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-[18px]">smart_toy</span>
+<span class="font-mono-data text-[12px] text-tertiary">MERIDIAN_AI</span>
+</div>
+<div class="p-4 rounded-2xl bg-white/5 border border-white/5 text-body-sm font-mono-data text-on-surface-variant leading-relaxed">
+                    Analyzing treasury health... All parameters nominal. Global balance up 1.2% in last 4 hours. No urgent rebalancing required.
+                </div>
+</div>
+<!-- Activity Log -->
+<div class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">history_edu</span>
+<span class="font-mono-data text-[12px] text-on-surface-variant">RECENT_ACTIVITY</span>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary"></div>
+<div class="flex-1 font-mono-data text-[12px]">
+<p class="text-white">Inbound Deposit</p>
+<p class="text-on-surface-variant/50">240,000 USDC • 2m ago</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+<div class="flex-1 font-mono-data text-[12px]">
+<p class="text-white">Protocol Rebalance</p>
+<p class="text-on-surface-variant/50">ETH → ARB • 15m ago</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Health Monitor -->
+<div class="space-y-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">monitor_heart</span>
+<span class="font-mono-data text-[12px] text-on-surface-variant">PROTOCOL_HEALTH</span>
+</div>
+<div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3">
+<div class="flex justify-between items-center text-[11px] font-mono-data">
+<span class="text-on-surface-variant/60">COLLATERAL RATIO</span>
+<span class="text-primary">342%</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full">
+<div class="h-full bg-primary w-[85%] rounded-full shadow-[0_0_8px_rgba(255,170,246,0.5)]"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-white/5">
+<div class="relative">
+<input class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-mono-data text-[12px] focus:border-tertiary outline-none" placeholder="Command AI..." type="text"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-tertiary text-[18px]">keyboard_return</span>
+</div>
+</div>
+</aside>
+<script>
+        function toggleTab(tab) {
+            const depositTab = document.getElementById('tab-deposit');
+            const withdrawTab = document.getElementById('tab-withdraw');
+            const depositPanel = document.getElementById('panel-deposit');
+            const withdrawPanel = document.getElementById('panel-withdraw');
+
+            if (tab === 'deposit') {
+                depositTab.classList.add('bg-primary/20', 'text-primary', 'border', 'border-primary/20');
+                depositTab.classList.remove('text-on-surface-variant');
+                withdrawTab.classList.remove('bg-primary/20', 'text-primary', 'border', 'border-primary/20');
+                withdrawTab.classList.add('text-on-surface-variant');
+                
+                depositPanel.classList.remove('hidden');
+                withdrawPanel.classList.add('hidden');
+            } else {
+                withdrawTab.classList.add('bg-primary/20', 'text-primary', 'border', 'border-primary/20');
+                withdrawTab.classList.remove('text-on-surface-variant');
+                depositTab.classList.remove('bg-primary/20', 'text-primary', 'border', 'border-primary/20');
+                depositTab.classList.add('text-on-surface-variant');
+
+                withdrawPanel.classList.remove('hidden');
+                depositPanel.classList.add('hidden');
+            }
+        }
+
+        // Staggered animation entry for chain list
+        document.addEventListener('DOMContentLoaded', () => {
+            const listItems = document.querySelectorAll('.group.cursor-default');
+            listItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.5s ease-out';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 300 + (index * 50));
+            });
+        });
+    </script>
+</body></html>

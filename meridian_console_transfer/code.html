@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Transfer Assets</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Hanken+Grotesk:wght@600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#800083",
+                    "surface-dim": "#131314",
+                    "secondary-fixed-dim": "#d1bcff",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#002e3a",
+                    "surface-container-low": "#1c1b1c",
+                    "on-secondary-fixed": "#23005b",
+                    "outline-variant": "#554151",
+                    "surface-container-highest": "#353436",
+                    "primary": "#ffaaf6",
+                    "on-primary-fixed": "#380039",
+                    "inverse-primary": "#a800ab",
+                    "surface-container-lowest": "#0e0e0f",
+                    "background": "#131314",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#4cd6ff",
+                    "secondary-container": "#7000ff",
+                    "surface-tint": "#ffaaf6",
+                    "outline": "#a2899c",
+                    "primary-fixed-dim": "#ffaaf6",
+                    "surface-container-high": "#2a2a2b",
+                    "secondary-fixed": "#e9ddff",
+                    "on-secondary-fixed-variant": "#5700c9",
+                    "primary-container": "#f432f6",
+                    "on-secondary-container": "#ddcdff",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-surface": "#e5e2e3",
+                    "surface-bright": "#3a393a",
+                    "surface-container": "#201f20",
+                    "surface": "#131314",
+                    "on-tertiary": "#003543",
+                    "on-primary-container": "#4f0051",
+                    "on-secondary": "#3c0090",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "on-background": "#e5e2e3",
+                    "tertiary-container": "#009dc1",
+                    "tertiary": "#4cd6ff",
+                    "on-primary": "#5b005d",
+                    "inverse-on-surface": "#313031",
+                    "inverse-surface": "#e5e2e3",
+                    "secondary": "#d1bcff",
+                    "tertiary-fixed": "#b7eaff",
+                    "surface-variant": "#353436",
+                    "primary-fixed": "#ffd7f6",
+                    "on-surface-variant": "#dabfd3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "margin-desktop": "48px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "container-max": "1440px",
+                    "stack-lg": "32px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-caps": ["JetBrains Mono"],
+                    "mono-data": ["JetBrains Mono"],
+                    "headline-xl": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        body {
+            background-color: #131314;
+            color: #e5e2e3;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-input-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-input-panel:focus-within {
+            border-color: #ffaaf6;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 20px rgba(255, 170, 246, 0.1);
+        }
+
+        .gradient-btn {
+            background: linear-gradient(135deg, #ffaaf6 0%, #f432f6 100%);
+            transition: transform 0.2s ease-out-cubic;
+        }
+
+        .gradient-btn:active {
+            transform: scale(0.98);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .mesh-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(112, 0, 255, 0.08) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(244, 50, 246, 0.08) 0%, transparent 40%);
+            z-index: -1;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md selection:bg-primary/30">
+<div class="mesh-gradient"></div>
+<!-- LEFT SIDEBAR -->
+<nav class="fixed h-full w-64 left-0 top-0 bg-surface/60 backdrop-blur-xl border-r border-white/5 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container text-lg" data-icon="token">token</span>
+</div>
+<div>
+<h1 class="font-headline-lg text-[20px] font-bold text-on-surface leading-none">Meridian</h1>
+<p class="text-on-surface-variant font-label-caps text-[10px] mt-1">INSTITUTIONAL</p>
+</div>
+</div>
+</div>
+<div class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-primary font-bold border-r-2 border-primary bg-white/5" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span>Treasury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="lock_open">lock_open</span>
+<span>Vaults</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span>Strategist</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span>Market Watch</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+<span>Compliance</span>
+</a>
+</div>
+<div class="px-4 mt-auto space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant font-medium hover:bg-white/5 transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span>Support</span>
+</a>
+</div>
+</nav>
+<!-- RIGHT TERMINAL BAR -->
+<aside class="fixed h-full w-80 right-0 top-0 bg-surface-container-low/40 backdrop-blur-2xl border-l border-white/10 flex flex-col p-6 z-50 overflow-y-auto">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-label-caps text-label-caps text-tertiary">TERMINAL V2.4</h3>
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+</div>
+<div class="space-y-6">
+<!-- AI ASSISTANT -->
+<div class="bg-tertiary-container/10 border border-tertiary/20 rounded-xl p-4">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="smart_toy">smart_toy</span>
+<span class="font-mono-data text-[12px] text-tertiary">AI ASSISTANT</span>
+</div>
+<p class="text-body-sm text-on-surface-variant font-mono-data">Current gas prices are optimal for batch transfers. Estimated saving: 12.4% vs median.</p>
+</div>
+<!-- ACTIVITY FEED -->
+<div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant/60" data-icon="history_edu">history_edu</span>
+<span class="font-mono-data text-label-caps opacity-60">ACTIVITY</span>
+</div>
+</div>
+<div class="space-y-4">
+<div class="border-l-2 border-primary/20 pl-4 py-1">
+<div class="text-[12px] font-mono-data text-primary">DEPOSIT</div>
+<div class="text-body-sm font-medium">15,000 USDC</div>
+<div class="text-[10px] text-on-surface-variant opacity-50">2 mins ago</div>
+</div>
+<div class="border-l-2 border-tertiary/20 pl-4 py-1">
+<div class="text-[12px] font-mono-data text-tertiary">STRATEGY</div>
+<div class="text-body-sm font-medium">Rebalanced Portfolio B</div>
+<div class="text-[10px] text-on-surface-variant opacity-50">14 mins ago</div>
+</div>
+</div>
+</div>
+<!-- HEALTH -->
+<div class="mt-auto">
+<div class="flex items-center gap-2 mb-3">
+<span class="material-symbols-outlined text-tertiary" data-icon="monitor_heart">monitor_heart</span>
+<span class="font-mono-data text-label-caps">PROTOCOL HEALTH</span>
+</div>
+<div class="bg-white/5 rounded-lg h-1.5 w-full overflow-hidden">
+<div class="bg-tertiary h-full w-[94%]"></div>
+</div>
+<div class="flex justify-between mt-2 font-mono-data text-[10px] text-on-surface-variant/60">
+<span>STABILITY</span>
+<span>94.2%</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- TOP NAV BAR -->
+<header class="fixed top-0 right-80 w-[calc(100%-36rem)] h-20 bg-background/80 backdrop-blur-md flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-8">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="bg-surface-container-high/40 border-none rounded-full pl-10 pr-6 py-2 text-body-sm focus:ring-1 focus:ring-primary w-64 transition-all" placeholder="Search markets, vaults..." type="text"/>
+</div>
+<nav class="hidden md:flex gap-6">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-all" href="#">Governance</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-all" href="#">Analytics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-all" href="#">Bridge</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<div class="flex items-center gap-3 pl-2 border-l border-white/10">
+<div class="text-right">
+<div class="text-body-sm font-bold">0x71...4F92</div>
+<div class="text-[10px] font-mono-data text-tertiary">MAINNET</div>
+</div>
+<div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-secondary p-0.5">
+<div class="w-full h-full rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A futuristic geometric 3D avatar in iridescent purple and chrome, reflecting a minimalist digital space with soft studio lighting, representing high-end institutional crypto identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHh4lIssPyB8qJ_c6VgvQDbWQgdcmN2AFwrqwEFksmntMwpxTGf6aPS4sXqlbucPgZr5DRbnQ4dvAJ5myQSoLnNIlbvAQae1yADmTWOkwdlRoYnUgn39HCdw6KIH7LPlUFinLLPHyqNDkK7PgRnoFwaq4YKbdx0s7SHpjInd5O6tONbzRGanVkHyKcjs2h6ogAAdhuOJSOfrlfoM4akeKs7cRn-hWDI-AAjW0435CtYZl2XHLqUGaibwvEhZEDq-Y7CDc1nkAFK5g"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN CONTENT CANVAS -->
+<main class="ml-64 mr-80 pt-28 px-margin-desktop pb-12 min-h-screen">
+<div class="max-w-xl mx-auto space-y-8">
+<!-- HEADER -->
+<div class="text-center">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Transfer Assets</h2>
+<p class="text-on-surface-variant text-body-md">Securely move assets between institutional vaults</p>
+</div>
+<!-- CETUS-STYLE INPUT STACK -->
+<div class="space-y-1">
+<!-- AMOUNT PANEL -->
+<div class="glass-input-panel rounded-t-2xl p-6">
+<div class="flex justify-between items-center mb-4">
+<label class="font-label-caps text-[12px] text-on-surface-variant opacity-70">AMOUNT TO SEND</label>
+<span class="text-body-sm text-on-surface-variant font-mono-data">Balance: <span class="text-on-surface">124,502.42 USDC</span></span>
+</div>
+<div class="flex items-center gap-4">
+<input class="bg-transparent border-none p-0 text-[40px] font-headline-lg text-on-surface focus:ring-0 w-full placeholder:text-on-surface/20" placeholder="0.00" type="text" value="10,000"/>
+<button class="bg-white/5 hover:bg-white/10 border border-white/10 flex items-center gap-2 px-3 py-2 rounded-xl transition-colors">
+<div class="w-6 h-6 rounded-full bg-tertiary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="monetization_on" data-weight="fill">monetization_on</span>
+</div>
+<span class="font-bold text-on-surface">USDC</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+<div class="mt-4 flex gap-2">
+<button class="px-3 py-1 rounded-md bg-white/5 border border-white/5 text-[11px] font-mono-data hover:bg-white/10 transition-colors">25%</button>
+<button class="px-3 py-1 rounded-md bg-white/5 border border-white/5 text-[11px] font-mono-data hover:bg-white/10 transition-colors">50%</button>
+<button class="px-3 py-1 rounded-md bg-white/5 border border-white/5 text-[11px] font-mono-data hover:bg-white/10 transition-colors text-primary">MAX</button>
+</div>
+</div>
+<!-- DIVIDER WITH ACTION -->
+<div class="relative h-4 flex items-center justify-center z-10">
+<div class="bg-surface h-10 w-10 rounded-full flex items-center justify-center border-4 border-background">
+<span class="material-symbols-outlined text-primary" data-icon="south">south</span>
+</div>
+</div>
+<!-- RECIPIENT PANEL -->
+<div class="glass-input-panel rounded-b-2xl p-6">
+<div class="flex justify-between items-center mb-4">
+<label class="font-label-caps text-[12px] text-on-surface-variant opacity-70">RECIPIENT ADDRESS</label>
+<button class="text-primary text-[12px] font-bold hover:underline">Address Book</button>
+</div>
+<div class="relative">
+<input class="bg-transparent border-none p-0 text-[18px] font-body-md text-on-surface focus:ring-0 w-full placeholder:text-on-surface/30" placeholder="Enter ENS or 0x address..." type="text"/>
+</div>
+<div class="mt-4 flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/10">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="info">info</span>
+<p class="text-[12px] text-on-surface-variant">Recipient must be a whitelisted institutional counterparty.</p>
+</div>
+</div>
+</div>
+<!-- ACTION BUTTON -->
+<button class="gradient-btn w-full py-5 rounded-2xl font-bold text-lg text-on-primary shadow-[0_10px_40px_rgba(244,50,246,0.3)] hover:brightness-110 active:brightness-90 transition-all flex items-center justify-center gap-2">
+<span>Confirm Transfer</span>
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- FEE/TIME ESTIMATE -->
+<div class="glass-card rounded-2xl p-6 space-y-4">
+<div class="flex justify-between items-center text-body-sm">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="gas_meter">gas_meter</span>
+<span>Estimated Network Fee</span>
+</div>
+<span class="font-mono-data text-on-surface">~12.40 USDC</span>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="schedule">schedule</span>
+<span>Finality Time</span>
+</div>
+<span class="font-mono-data text-on-surface">~15-30 seconds</span>
+</div>
+<div class="pt-4 border-t border-white/5 flex justify-between items-center text-body-sm">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-sm" data-icon="security">security</span>
+<span>Security Audit</span>
+</div>
+<span class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-sm" data-icon="verified" data-weight="fill">verified</span>
+<span class="font-mono-data">PASSED</span>
+</span>
+</div>
+</div>
+<!-- BENTO INFO GRID -->
+<div class="grid grid-cols-2 gap-4">
+<div class="glass-card rounded-2xl p-5 flex flex-col justify-between h-32">
+<div class="flex items-center gap-2 opacity-50 font-label-caps text-[10px]">
+<span class="material-symbols-outlined text-sm" data-icon="history">history</span>
+<span>LAST SENT</span>
+</div>
+<div>
+<div class="text-body-sm font-bold">2 days ago</div>
+<div class="text-[12px] text-on-surface-variant">to 0x92...A1B2</div>
+</div>
+</div>
+<div class="glass-card rounded-2xl p-5 flex flex-col justify-between h-32 border-primary/20">
+<div class="flex items-center gap-2 text-primary font-label-caps text-[10px]">
+<span class="material-symbols-outlined text-sm" data-icon="auto_graph">auto_graph</span>
+<span>VOLUME CAP</span>
+</div>
+<div>
+<div class="text-body-sm font-bold">82% utilized</div>
+<div class="w-full bg-white/5 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary h-full w-[82%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FLOATING BACKGROUND DECORATIONS -->
+<div class="fixed top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
+<div class="fixed bottom-1/4 right-1/4 w-96 h-96 bg-tertiary/10 rounded-full blur-[120px] -z-10 animate-pulse" style="animation-delay: 2s"></div>
+<script>
+        // Micro-interaction for input fields
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.closest('.glass-input-panel')?.style.setProperty('border-color', '#ffaaf6');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.closest('.glass-input-panel')?.style.setProperty('border-color', 'rgba(255, 255, 255, 0.08)');
+            });
+        });
+
+        // Staggered Entrance Animation Simulation
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('main > div > *');
+            elements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    el.style.transition = 'all 0.4s ease-out-cubic';
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100 + (index * 50));
+            });
+        });
+    </script>
+</body></html>

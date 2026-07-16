@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Policy Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Hanken+Grotesk:wght@600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 170, 246, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .magenta-glow {
+            box-shadow: 0 0 20px rgba(244, 50, 246, 0.15);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        body {
+            background-color: #131314;
+            color: #e5e2e3;
+            overflow-x: hidden;
+        }
+        .ease-out-cubic {
+            transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#800083",
+                      "surface-dim": "#131314",
+                      "secondary-fixed-dim": "#d1bcff",
+                      "error": "#ffb4ab",
+                      "on-tertiary-container": "#002e3a",
+                      "surface-container-low": "#1c1b1c",
+                      "on-secondary-fixed": "#23005b",
+                      "outline-variant": "#554151",
+                      "surface-container-highest": "#353436",
+                      "primary": "#ffaaf6",
+                      "on-primary-fixed": "#380039",
+                      "inverse-primary": "#a800ab",
+                      "surface-container-lowest": "#0e0e0f",
+                      "background": "#131314",
+                      "error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#004e60",
+                      "tertiary-fixed-dim": "#4cd6ff",
+                      "secondary-container": "#7000ff",
+                      "surface-tint": "#ffaaf6",
+                      "outline": "#a2899c",
+                      "primary-fixed-dim": "#ffaaf6",
+                      "surface-container-high": "#2a2a2b",
+                      "secondary-fixed": "#e9ddff",
+                      "on-secondary-fixed-variant": "#5700c9",
+                      "primary-container": "#f432f6",
+                      "on-secondary-container": "#ddcdff",
+                      "on-tertiary-fixed": "#001f28",
+                      "on-surface": "#e5e2e3",
+                      "surface-bright": "#3a393a",
+                      "surface-container": "#201f20",
+                      "surface": "#131314",
+                      "on-tertiary": "#003543",
+                      "on-primary-container": "#4f0051",
+                      "on-secondary": "#3c0090",
+                      "on-error-container": "#ffdad6",
+                      "on-error": "#690005",
+                      "on-background": "#e5e2e3",
+                      "tertiary-container": "#009dc1",
+                      "tertiary": "#4cd6ff",
+                      "on-primary": "#5b005d",
+                      "inverse-on-surface": "#313031",
+                      "inverse-surface": "#e5e2e3",
+                      "secondary": "#d1bcff",
+                      "tertiary-fixed": "#b7eaff",
+                      "surface-variant": "#353436",
+                      "primary-fixed": "#ffd7f6",
+                      "on-surface-variant": "#dabfd3"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "16px",
+                      "margin-desktop": "48px",
+                      "gutter": "24px",
+                      "margin-mobile": "16px",
+                      "container-max": "1440px",
+                      "stack-lg": "32px",
+                      "stack-sm": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "label-caps": ["JetBrains Mono"],
+                      "mono-data": ["JetBrains Mono"],
+                      "headline-xl": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "label-caps": ["11px", {"lineHeight": "1.2", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                      "mono-data": ["14px", {"lineHeight": "1.4", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "headline-xl": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="font-body-md text-on-surface selection:bg-primary/30">
+<!-- Ambient Background -->
+
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed h-full w-64 left-0 top-0 border-r border-white/5 bg-surface/60 backdrop-blur-xl flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface">Meridian Console</h1>
+<p class="text-[10px] uppercase tracking-widest text-primary font-bold opacity-80 mt-1">Institutional Treasury</p>
+</div>
+<nav class="flex-1 space-y-1 px-4">
+<a class="flex items-center px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">grid_view</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">account_balance_wallet</span>
+<span>Treasury</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">lock_open</span>
+<span>Vaults</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">auto_awesome</span>
+<span>Strategist</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">insights</span>
+<span>Market Watch</span>
+</a>
+<a class="flex items-center px-4 py-3 text-primary font-bold border-r-2 border-primary bg-primary/5 rounded-l-lg group" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">verified_user</span>
+<span>Compliance</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-1">
+<a class="flex items-center px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3 text-xl">help_outline</span>
+<span>Support</span>
+</a>
+</div>
+</aside>
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] border-b border-white/5 bg-background/80 backdrop-blur-md h-20 flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center bg-surface-container-highest/30 px-4 py-2 rounded-full border border-white/5 w-80">
+<span class="material-symbols-outlined text-on-surface-variant mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-sm w-full placeholder:text-on-surface-variant/50" placeholder="Search accounts, policies..." type="text"/>
+</div>
+<div class="flex items-center space-x-8">
+<nav class="hidden md:flex space-x-6">
+<a class="text-on-surface-variant font-body-sm hover:text-primary transition-all" href="#">Governance</a>
+<a class="text-on-surface-variant font-body-sm hover:text-primary transition-all" href="#">Analytics</a>
+<a class="text-on-surface-variant font-body-sm hover:text-primary transition-all" href="#">Bridge</a>
+</nav>
+<div class="flex items-center space-x-4 border-l border-white/10 pl-8">
+<button class="relative p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="px-6 py-2 bg-primary text-on-primary-container font-bold rounded-full scale-98 active:scale-95 transition-all text-body-sm magenta-glow">
+                    Connect Wallet
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 pl-64 min-h-screen">
+<div class="max-w-[1440px] mx-auto p-margin-desktop space-y-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end">
+<div>
+<nav class="flex items-center space-x-2 text-label-caps text-on-surface-variant/60 mb-2">
+<span>COMPLIANCE</span>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span class="text-primary">POLICY #XF-902</span>
+</nav>
+<h2 class="font-headline-xl text-headline-xl">Treasury Spending Policy</h2>
+</div>
+<div class="flex items-center space-x-4">
+<div class="px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 flex items-center space-x-2 animate-pulse">
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+<span class="text-label-caps text-primary">In Progress</span>
+</div>
+<button class="glass-card px-6 py-2.5 rounded-xl font-bold flex items-center space-x-2 hover:bg-white/10 transition-all">
+<span class="material-symbols-outlined">edit</span>
+<span>Modify Policy</span>
+</button>
+</div>
+</div>
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Signer List Panel -->
+<div class="col-span-12 lg:col-span-4 flex flex-col space-y-gutter">
+<div class="glass-card rounded-3xl p-8 flex flex-col h-full">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-lg text-2xl">Signer List</h3>
+<span class="text-mono-data text-primary">5 Total</span>
+</div>
+<div class="space-y-4 custom-scrollbar overflow-y-auto max-h-[420px] pr-2">
+<!-- Signer Item -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-xl overflow-hidden bg-secondary-container/20 flex items-center justify-center border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A close-up portrait of a professional woman with sharp glasses and a minimalist futuristic suit, soft cinematic lighting, dark background with magenta rim light, high fidelity digital art style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx-0SdRiEvRjdBAM3P724V124YsbFMmSIDC985x9PfbNVQc21ptjzCYzJ2Xrdqwpos4KDYEhyKr64qdDXsFGHCl221XBiQnKb3EyVFEf2HrQcVhZPioHIFwKNCP5RKM_ebiJxoz5jxqQMh1RyLVJ8e8o9dMRSTeHokf9cFkMnvWnMtSBjnW2YzBMY7oI7zzYZN5CvUiwBxO3KwuN7rIK2goGgIzLr5CPSzhmuKGQ_B26I-X9fpmoB9OHcsi3EZTomzlUS3o20ylfM"/>
+</div>
+<div>
+<p class="font-bold text-body-md">S. Chen</p>
+<p class="text-label-caps text-on-surface-variant/70">CHIEF STRATEGIST</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-weight="fill">verified</span>
+</div>
+<!-- Signer Item -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-xl overflow-hidden bg-secondary-container/20 flex items-center justify-center border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A portrait of an elderly distinguished man with grey hair, wearing a sleek high-tech headset, futuristic fashion elements, deep shadow lighting with magenta highlights, 8k resolution detailed character design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjiGhUxbDCYNFBnYhFo-Vdl472HOyzoZrP-YUESe7zKDPmaVDP13aEUtS33vZlmEIt0vDHLlpjWuvnZVDWhr46G_kWVkpsX6JIs6P9s4-mYGh1QaTYc9m_WKl_6FUCPBIhB-LZweeeCUvETnrVaSwHhhzcUm15iCx9p5gpErhss9pNZZxLHwNeSCMZsQfiFYX8XgzPb54SmEmjWuHTC0V05WXVHbj2F0fVt7ZZ_vhDR0u4j9GhmwobrQcXLUYmTXTSWo8NvAtuk78"/>
+</div>
+<div>
+<p class="font-bold text-body-md">M. Sterling</p>
+<p class="text-label-caps text-on-surface-variant/70">TREASURY HEAD</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-weight="fill">verified</span>
+</div>
+<!-- Signer Item -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-xl overflow-hidden bg-secondary-container/20 flex items-center justify-center border border-white/10">
+<img class="w-full h-full object-cover" data-alt="A creative digital artist with dyed neon hair and modern cybernetic fashion, professional lighting, dark aesthetic background with subtle purple lens flare, highly detailed character concept art." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJmtHgYaq2Aibln_iVs3UHwuE-LDyTSxjOM_QJEVHYw8CkULRuEovDyerpW6Q-afhRFBRY7C5mb9rR5avf6NGe5k2DjGaVa8EY-o-k6-vPDhgz_xgZbQFp9PvNmp9eCdnZJQ9LtqJqSJVF3O9XpMXt8Vw14Sw3rC48JY9FVSbOergTBb_2e09u_b5i8q84ThzIMy9JrHiYwwLHL68jpGNDkyJJNmRKJaHDbGlV511oyG8UHxsmtzrl64wh9tiQsjW4JERyKmg2v2w"/>
+</div>
+<div>
+<p class="font-bold text-body-md">V. Nova</p>
+<p class="text-label-caps text-on-surface-variant/70">RISK OFFICER</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary" data-weight="fill">verified</span>
+</div>
+<!-- Signer Item -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 opacity-50 grayscale">
+<div class="flex items-center space-x-4">
+<div class="w-10 h-10 rounded-xl overflow-hidden bg-white/5 flex items-center justify-center border border-white/10">
+<span class="material-symbols-outlined text-on-surface-variant">person</span>
+</div>
+<div>
+<p class="font-bold text-body-md">J. Aris</p>
+<p class="text-label-caps text-on-surface-variant/70">PENDING INVITE</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">hourglass_empty</span>
+</div>
+</div>
+<button class="mt-8 w-full py-4 rounded-2xl border-2 border-dashed border-white/10 hover:border-primary/50 text-on-surface-variant hover:text-primary transition-all font-bold flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined">person_add</span>
+<span>Add Signer</span>
+</button>
+</div>
+</div>
+<!-- Threshold & Spending Rules -->
+<div class="col-span-12 lg:col-span-8 space-y-gutter">
+<!-- Threshold Stepper -->
+<div class="glass-card rounded-3xl p-8">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h3 class="font-headline-lg text-2xl">Signature Threshold</h3>
+<p class="text-on-surface-variant/70 text-body-sm">Minimum approvals required to execute treasury operations.</p>
+</div>
+<div class="flex items-baseline space-x-1">
+<span class="text-headline-xl text-primary">3</span>
+<span class="text-on-surface-variant text-2xl">/ 5</span>
+</div>
+</div>
+<div class="relative pt-6 pb-2">
+<!-- Custom Stepper Slider -->
+<div class="flex items-center justify-between relative h-2 bg-white/10 rounded-full">
+<div class="absolute h-full bg-primary rounded-full shadow-[0_0_15px_rgba(255,170,246,0.6)]" style="width: 60%"></div>
+<!-- Steps -->
+<div class="relative z-10 w-6 h-6 rounded-full bg-primary border-4 border-background -ml-3 flex items-center justify-center text-[10px] text-on-primary-container font-bold">1</div>
+<div class="relative z-10 w-6 h-6 rounded-full bg-primary border-4 border-background flex items-center justify-center text-[10px] text-on-primary-container font-bold">2</div>
+<div class="relative z-10 w-8 h-8 rounded-full bg-primary border-4 border-background -mt-1 flex items-center justify-center text-xs text-on-primary-container font-bold shadow-lg magenta-glow ring-4 ring-primary/20">3</div>
+<div class="relative z-10 w-6 h-6 rounded-full bg-surface-container-high border-4 border-background flex items-center justify-center text-[10px] text-on-surface-variant font-bold">4</div>
+<div class="relative z-10 w-6 h-6 rounded-full bg-surface-container-high border-4 border-background -mr-3 flex items-center justify-center text-[10px] text-on-surface-variant font-bold">5</div>
+</div>
+<div class="flex justify-between mt-4 text-label-caps text-on-surface-variant/50">
+<span>LOW SECURITY</span>
+<span>RECOMMENDED</span>
+<span>STRICT</span>
+</div>
+</div>
+</div>
+<!-- Spending Rules Table -->
+<div class="glass-card rounded-3xl overflow-hidden">
+<div class="p-8 border-b border-white/5 flex justify-between items-center">
+<h3 class="font-headline-lg text-2xl">Spending Rules</h3>
+<button class="text-primary font-bold text-body-sm flex items-center hover:underline">
+<span class="material-symbols-outlined text-sm mr-1">add</span>
+                                Add Rule
+                            </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-white/5 text-label-caps text-on-surface-variant">
+<tr>
+<th class="px-8 py-4 font-bold">ASSET CLASS</th>
+<th class="px-8 py-4 font-bold">LIMIT (24H)</th>
+<th class="px-8 py-4 font-bold">WHITELIST</th>
+<th class="px-8 py-4 font-bold">COOLDOWN</th>
+<th class="px-8 py-4 font-bold">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5 text-body-sm">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-tertiary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-lg">attach_money</span>
+</div>
+<span class="font-bold">Stablecoins (USDC/USDT)</span>
+</div>
+</td>
+<td class="px-8 py-5 font-mono-data">$2,500,000</td>
+<td class="px-8 py-5">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-white/10 border border-background flex items-center justify-center text-[8px]">CB</div>
+<div class="w-6 h-6 rounded-full bg-white/10 border border-background flex items-center justify-center text-[8px]">KR</div>
+<div class="w-6 h-6 rounded-full bg-white/10 border border-background flex items-center justify-center text-[8px]">+4</div>
+</div>
+</td>
+<td class="px-8 py-5 text-on-surface-variant">0h</td>
+<td class="px-8 py-5">
+<span class="px-2 py-1 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold">ACTIVE</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-lg">currency_bitcoin</span>
+</div>
+<span class="font-bold">Native Assets (ETH/BTC)</span>
+</div>
+</td>
+<td class="px-8 py-5 font-mono-data">$500,000</td>
+<td class="px-8 py-5 text-on-surface-variant">Any Verified</td>
+<td class="px-8 py-5 text-on-surface-variant">6h</td>
+<td class="px-8 py-5">
+<span class="px-2 py-1 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold">ACTIVE</span>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-lg bg-secondary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-lg">token</span>
+</div>
+<span class="font-bold">Protocol Tokens (LPs)</span>
+</div>
+</td>
+<td class="px-8 py-5 font-mono-data">$100,000</td>
+<td class="px-8 py-5 text-on-surface-variant">Internal Only</td>
+<td class="px-8 py-5 text-on-surface-variant">12h</td>
+<td class="px-8 py-5">
+<span class="px-2 py-1 rounded bg-white/10 text-on-surface-variant/50 text-[10px] font-bold">DRAFT</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Pending Approvals & Audit Log -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Pending Approvals -->
+<div class="glass-card rounded-3xl p-8">
+<div class="flex items-center space-x-2 mb-8">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+<h3 class="font-headline-lg text-2xl">Pending Approvals</h3>
+</div>
+<div class="space-y-4">
+<div class="p-6 rounded-2xl bg-primary/5 border border-primary/20 flex justify-between items-center group">
+<div class="flex items-start space-x-4">
+<div class="p-3 bg-primary/20 rounded-xl">
+<span class="material-symbols-outlined text-primary">logout</span>
+</div>
+<div>
+<p class="font-bold">Withdraw 50,000 USDC</p>
+<p class="text-body-sm text-on-surface-variant/80">To: <span class="font-mono-data">0x8a12...3f92</span></p>
+<div class="flex items-center mt-2 space-x-2">
+<div class="flex -space-x-1">
+<div class="w-5 h-5 rounded-full bg-primary border border-background"></div>
+<div class="w-5 h-5 rounded-full bg-primary border border-background"></div>
+<div class="w-5 h-5 rounded-full bg-white/20 border border-background"></div>
+</div>
+<span class="text-[10px] text-on-surface-variant/60 font-bold uppercase">2 OF 3 SIGNED</span>
+</div>
+</div>
+</div>
+<button class="px-4 py-2 bg-primary text-on-primary-container font-bold rounded-xl hover:scale-105 transition-transform">Sign</button>
+</div>
+</div>
+</div>
+<!-- Audit Log -->
+<div class="glass-card rounded-3xl p-8">
+<div class="flex justify-between items-center mb-8">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-on-surface-variant">list_alt</span>
+<h3 class="font-headline-lg text-2xl">Audit Log</h3>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<div class="space-y-6">
+<div class="flex items-start space-x-4 relative">
+<div class="absolute left-2.5 top-8 bottom-0 w-px bg-white/5"></div>
+<div class="w-5 h-5 rounded-full bg-tertiary flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[10px] text-on-tertiary" data-weight="fill">check</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-body-sm font-bold">Policy Change Executed</p>
+<span class="text-mono-data text-[10px] text-on-surface-variant/50">2m ago</span>
+</div>
+<p class="text-[12px] text-on-surface-variant/70 leading-relaxed">Threshold updated from 2 to 3 signatures by <span class="text-primary">M. Sterling</span>.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4 relative">
+<div class="absolute left-2.5 top-8 bottom-0 w-px bg-white/5"></div>
+<div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center z-10 border border-white/20">
+<span class="material-symbols-outlined text-[10px] text-on-surface-variant">person</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-body-sm font-bold">Signer Invited</p>
+<span class="text-mono-data text-[10px] text-on-surface-variant/50">1h ago</span>
+</div>
+<p class="text-[12px] text-on-surface-variant/70 leading-relaxed"><span class="text-primary">V. Nova</span> invited <span class="text-primary">J. Aris</span> to the treasury policy board.</p>
+</div>
+</div>
+<div class="flex items-start space-x-4">
+<div class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center z-10 border border-white/20">
+<span class="material-symbols-outlined text-[10px] text-on-surface-variant">settings</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-center mb-1">
+<p class="text-body-sm font-bold">Rule Modified</p>
+<span class="text-mono-data text-[10px] text-on-surface-variant/50">3h ago</span>
+</div>
+<p class="text-[12px] text-on-surface-variant/70 leading-relaxed">Daily limit for Stablecoins increased to $2.5M by consensus.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action for Quick Policy Actions -->
+<button class="fixed bottom-10 right-10 w-16 h-16 rounded-full bg-primary text-on-primary-container flex items-center justify-center shadow-2xl magenta-glow hover:scale-110 active:scale-95 transition-all z-50 group">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-90 transition-transform">add</span>
+</button>
+<script>
+        // Micro-interaction for the threshold stepper
+        document.addEventListener('DOMContentLoaded', () => {
+            const steps = document.querySelectorAll('.relative.z-10.w-6, .relative.z-10.w-8');
+            steps.forEach((step, index) => {
+                step.addEventListener('mouseenter', () => {
+                    step.style.transform = 'scale(1.2)';
+                    step.style.transition = 'transform 0.2s cubic-bezier(0.33, 1, 0.68, 1)';
+                });
+                step.addEventListener('mouseleave', () => {
+                    step.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body></html>

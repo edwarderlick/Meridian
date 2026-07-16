@@ -1,0 +1,68 @@
+diff --git a/node_modules/@circle-fin/provider-cctp-v2/index.cjs b/node_modules/@circle-fin/provider-cctp-v2/index.cjs
+index a24d969..13e65d4 100644
+--- a/node_modules/@circle-fin/provider-cctp-v2/index.cjs
++++ b/node_modules/@circle-fin/provider-cctp-v2/index.cjs
+@@ -13766,13 +13766,26 @@ function assertCCTPV2Config(config) {
+         }
+         // Resolve spender address with proper error handling
+         const spenderAddress = resolveCCTPV2ContractAddress(chain);
+-        // Prepare action parameters
++        // Resolve the concrete chain (for its usdcAddress) the same way the allowance amount
++        // itself is resolved, below.
++        const resolvedChain = resolvedContext?.chain ?? chain;
++        // LOCAL PATCH (via patch-package) — was 'usdc.increaseAllowance', which calls the ERC-20's
++        // increaseAllowance(spender, addedValue) on-chain: every approve step ADDS `amount` on top
++        // of whatever allowance already exists, rather than setting it. Under repeated bridge
++        // attempts in one session (the previous attempt's allowance is never fully spent — burn
++        // only consumes the burned amount, not the whole approved amount), the on-chain allowance
++        // compounds across attempts and can eventually revert with "SafeMath: addition overflow" on
++        // token contracts that guard the addition (confirmed on Arc Testnet's USDC interface
++        // contract). 'token.approve' calls the standard approve(spender, amount) instead, which SETS
++        // the allowance to exactly what this transaction needs — idempotent regardless of whatever
++        // allowance already exists, so it can never accumulate or overflow.
+         const actionParams = {
++            tokenAddress: resolvedChain.usdcAddress,
+             amount: BigInt(amount),
+             delegate: spenderAddress,
+-            chain: resolvedContext?.chain ?? chain
++            chain: resolvedChain
+         };
+-        return await adapter.prepareAction('usdc.increaseAllowance', actionParams, resolvedContext);
++        return await adapter.prepareAction('token.approve', actionParams, resolvedContext);
+     }
+     /**
+    * Prepares a CCTP v2 token minting transaction on the destination chain.
+diff --git a/node_modules/@circle-fin/provider-cctp-v2/index.mjs b/node_modules/@circle-fin/provider-cctp-v2/index.mjs
+index f5965e5..888de75 100644
+--- a/node_modules/@circle-fin/provider-cctp-v2/index.mjs
++++ b/node_modules/@circle-fin/provider-cctp-v2/index.mjs
+@@ -13759,13 +13759,26 @@ function assertCCTPV2Config(config) {
+         }
+         // Resolve spender address with proper error handling
+         const spenderAddress = resolveCCTPV2ContractAddress(chain);
+-        // Prepare action parameters
++        // Resolve the concrete chain (for its usdcAddress) the same way the allowance amount
++        // itself is resolved, below.
++        const resolvedChain = resolvedContext?.chain ?? chain;
++        // LOCAL PATCH (via patch-package) — was 'usdc.increaseAllowance', which calls the ERC-20's
++        // increaseAllowance(spender, addedValue) on-chain: every approve step ADDS `amount` on top
++        // of whatever allowance already exists, rather than setting it. Under repeated bridge
++        // attempts in one session (the previous attempt's allowance is never fully spent — burn
++        // only consumes the burned amount, not the whole approved amount), the on-chain allowance
++        // compounds across attempts and can eventually revert with "SafeMath: addition overflow" on
++        // token contracts that guard the addition (confirmed on Arc Testnet's USDC interface
++        // contract). 'token.approve' calls the standard approve(spender, amount) instead, which SETS
++        // the allowance to exactly what this transaction needs — idempotent regardless of whatever
++        // allowance already exists, so it can never accumulate or overflow.
+         const actionParams = {
++            tokenAddress: resolvedChain.usdcAddress,
+             amount: BigInt(amount),
+             delegate: spenderAddress,
+-            chain: resolvedContext?.chain ?? chain
++            chain: resolvedChain
+         };
+-        return await adapter.prepareAction('usdc.increaseAllowance', actionParams, resolvedContext);
++        return await adapter.prepareAction('token.approve', actionParams, resolvedContext);
+     }
+     /**
+    * Prepares a CCTP v2 token minting transaction on the destination chain.

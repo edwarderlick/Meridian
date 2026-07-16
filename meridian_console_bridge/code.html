@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Bridge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;family=Hanken+Grotesk:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#800083",
+                    "surface-dim": "#131314",
+                    "secondary-fixed-dim": "#d1bcff",
+                    "error": "#ffb4ab",
+                    "on-tertiary-container": "#002e3a",
+                    "surface-container-low": "#1c1b1c",
+                    "on-secondary-fixed": "#23005b",
+                    "outline-variant": "#554151",
+                    "surface-container-highest": "#353436",
+                    "primary": "#ffaaf6",
+                    "on-primary-fixed": "#380039",
+                    "inverse-primary": "#a800ab",
+                    "surface-container-lowest": "#0e0e0f",
+                    "background": "#131314",
+                    "error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#004e60",
+                    "tertiary-fixed-dim": "#4cd6ff",
+                    "secondary-container": "#7000ff",
+                    "surface-tint": "#ffaaf6",
+                    "outline": "#a2899c",
+                    "primary-fixed-dim": "#ffaaf6",
+                    "surface-container-high": "#2a2a2b",
+                    "secondary-fixed": "#e9ddff",
+                    "on-secondary-fixed-variant": "#5700c9",
+                    "primary-container": "#f432f6",
+                    "on-secondary-container": "#ddcdff",
+                    "on-tertiary-fixed": "#001f28",
+                    "on-surface": "#e5e2e3",
+                    "surface-bright": "#3a393a",
+                    "surface-container": "#201f20",
+                    "surface": "#131314",
+                    "on-tertiary": "#003543",
+                    "on-primary-container": "#4f0051",
+                    "on-secondary": "#3c0090",
+                    "on-error-container": "#ffdad6",
+                    "on-error": "#690005",
+                    "on-background": "#e5e2e3",
+                    "tertiary-container": "#009dc1",
+                    "tertiary": "#4cd6ff",
+                    "on-primary": "#5b005d",
+                    "inverse-on-surface": "#313031",
+                    "inverse-surface": "#e5e2e3",
+                    "secondary": "#d1bcff",
+                    "tertiary-fixed": "#b7eaff",
+                    "surface-variant": "#353436",
+                    "primary-fixed": "#ffd7f6",
+                    "on-surface-variant": "#dabfd3"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-md": "16px",
+                    "margin-desktop": "48px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "container-max": "1440px",
+                    "stack-lg": "32px",
+                    "stack-sm": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-caps": ["JetBrains Mono"],
+                    "mono-data": ["JetBrains Mono"],
+                    "headline-xl": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        .inner-glow-magenta {
+            border: 1px solid rgba(244, 50, 246, 0.3);
+            box-shadow: 0 0 20px rgba(244, 50, 246, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav-border {
+            border-right: 2px solid #ffaaf6;
+        }
+        .step-active {
+            background: linear-gradient(135deg, #f432f6 0%, #7000ff 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden">
+<!-- Global Background Animation -->
+
+<!-- Side Navigation Shell -->
+<aside class="fixed h-full w-64 left-0 top-0 bg-surface/60 backdrop-blur-xl border-r border-white/5 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Meridian</h1>
+<p class="font-label-caps text-label-caps text-primary tracking-widest opacity-80 uppercase">Institutional Treasury</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">grid_view</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">account_balance_wallet</span>
+<span>Treasury</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">lock_open</span>
+<span>Vaults</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">auto_awesome</span>
+<span>Strategist</span>
+</a>
+<a class="flex items-center px-6 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors group" href="#">
+<span class="material-symbols-outlined mr-3">insights</span>
+<span>Market Watch</span>
+</a>
+<a class="flex items-center px-6 py-3 text-primary font-bold border-r-2 border-primary bg-primary/5" href="#">
+<span class="material-symbols-outlined mr-3">badge</span>
+<span>Bridge</span>
+</a>
+</nav>
+<div class="mt-auto px-6 space-y-4">
+<button class="w-full py-3 px-4 rounded-lg bg-secondary-container text-on-secondary-container font-bold text-sm flex items-center justify-center gap-2 hover:brightness-110 transition-all">
+<span class="material-symbols-outlined text-sm">bolt</span>
+                Connect Strategy
+            </button>
+<div class="pt-6 border-t border-white/5 space-y-2">
+<a class="flex items-center text-on-surface-variant/60 hover:text-on-surface transition-colors text-sm" href="#">
+<span class="material-symbols-outlined mr-3 text-sm">settings</span> Settings
+                </a>
+<a class="flex items-center text-on-surface-variant/60 hover:text-on-surface transition-colors text-sm" href="#">
+<span class="material-symbols-outlined mr-3 text-sm">help_outline</span> Support
+                </a>
+</div>
+</div>
+</aside>
+<!-- Top Navigation -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center gap-8">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+<input class="w-full bg-surface-container/40 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary/50 placeholder:text-on-surface-variant/40" placeholder="Search markets, vaults..." type="text"/>
+</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-all font-medium text-sm" href="#">Governance</a>
+<a class="text-on-surface-variant hover:text-primary transition-all font-medium text-sm" href="#">Analytics</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 text-sm" href="#">Bridge</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high rounded-full border border-white/10 hover:border-primary/40 transition-all">
+<span class="material-symbols-outlined text-primary">account_circle</span>
+<span class="font-mono-data text-sm">0x8F2...4a1E</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-32 pb-16 px-margin-desktop">
+<div class="max-w-3xl mx-auto space-y-gutter">
+<!-- Bridge Header -->
+<div class="flex justify-between items-end mb-4">
+<div>
+<h2 class="font-headline-xl text-headline-xl tracking-tight text-on-surface">Asset Bridge</h2>
+<p class="text-on-surface-variant opacity-70">Cross-chain liquidity protocol for institutional vaults.</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 rounded-full bg-tertiary-container/10 border border-tertiary/20 text-tertiary font-mono-data text-xs flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+                        GAS: 12 Gwei
+                    </span>
+</div>
+</div>
+<!-- Bridge Core Stack -->
+<div class="space-y-2 relative">
+<!-- Source Panel -->
+<div class="glass-card inner-glow-magenta p-stack-lg rounded-2xl relative z-10">
+<div class="flex justify-between items-center mb-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">From Chain</span>
+<span class="font-mono-data text-xs text-on-surface-variant/60">Balance: 145,280.00 USDC</span>
+</div>
+<div class="flex items-center justify-between gap-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#627EEA] to-[#C0CBF6] flex items-center justify-center overflow-hidden shadow-lg shadow-[#627EEA]/20">
+<img class="w-8 h-8 object-contain" data-alt="A stylized professional 3D render of the Ethereum logo in glass and polished chrome against a soft indigo background, high fidelity, corporate tech aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWUKRl5Igf14Hdov36ldXEnjw9wepOBln7We5YpXnq061JJ2eU2QIzR62tcKj6eyxrZB4rqdV5xn5fSy12XzcjJ5o0sFonEOykHWQ62YDSJcA_pEhJ2ZVLevhZM3Qs0QmbHxAZ0HlNVEHPZhDLq1s74S-5ogZ5gGKHMefvoDxzX-H-fY9sKqE09X-jbSRcZQppyw2XSwT-dmDRlZJ8zBzYH-28_7K8Bu0mA4PdwpsJ_8d1NpnQ-pbRmEDAd5dl-_e-eBEsh96zRP0"/>
+</div>
+<div>
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface leading-tight">Ethereum</div>
+<div class="text-on-surface-variant text-sm">Mainnet</div>
+</div>
+</div>
+<div class="text-right">
+<input class="bg-transparent border-none text-right font-mono-data text-4xl font-bold text-primary focus:ring-0 w-full p-0" type="text" value="50,000.00"/>
+<div class="text-on-surface-variant text-sm mt-1">~$50,000.00</div>
+</div>
+</div>
+</div>
+<!-- Central Swap Action -->
+<div class="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-20">
+<button class="w-12 h-12 rounded-full bg-surface-container-highest border border-primary/30 flex items-center justify-center shadow-xl hover:scale-110 active:scale-95 transition-all group">
+<span class="material-symbols-outlined text-primary group-hover:rotate-180 transition-transform duration-500">expand_more</span>
+</button>
+</div>
+<!-- Destination Panel -->
+<div class="glass-card p-stack-lg rounded-2xl">
+<div class="flex justify-between items-center mb-6">
+<span class="font-label-caps text-label-caps text-on-surface-variant tracking-widest uppercase">To Chain</span>
+<span class="font-mono-data text-xs text-on-surface-variant/60">Receive Address: 0x8F2...4a1E</span>
+</div>
+<div class="flex items-center justify-between gap-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#7000ff] to-[#ffaaf6] flex items-center justify-center overflow-hidden shadow-lg shadow-primary/20">
+<img class="w-8 h-8 object-contain" data-alt="A futuristic 3D icon of the Polygon logo, metallic purple and magenta gradients, glowing edges, floating in a dark digital void with micro-reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClVvbdCVjZWa25cbUClTO6SYJA5HZXOO40GJ4O5xW45hoEM1Jd6i_zRkGbCDB-gXdo3N-2MYoGrKcBMhCWeGApPsBFP693F7_XfbXRD0FAPsqwcFgN54YjYDjNa3nv3npRVwI52QJwOJKYM_PEcHhvK2enoLWeBTzOReuOzBnfscRrY0-6R_6hVAi6Ju2dNzTXA2qtj2uvmJuE96Ya-RmPVa6oBiR2IkSK_lTccpGFBY4EeVks8Dfx4mW9TPlMvukHXwXCldAKdY4"/>
+</div>
+<div>
+<div class="font-headline-lg text-headline-lg font-bold text-on-surface leading-tight">Polygon</div>
+<div class="text-on-surface-variant text-sm">PoS Chain</div>
+</div>
+</div>
+<div class="text-right">
+<div class="font-mono-data text-4xl font-bold text-on-surface leading-tight opacity-50">49,975.00</div>
+<div class="text-on-surface-variant text-sm mt-1">Fee: 25.00 USDC (0.05%)</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Bridge Action -->
+<button class="w-full h-16 rounded-xl bg-gradient-to-r from-secondary-container to-primary-container text-on-primary-container font-headline-lg text-lg font-extrabold flex items-center justify-center gap-4 hover:brightness-110 active:scale-[0.98] transition-all shadow-[0_10px_30px_rgba(244,50,246,0.2)]">
+                Initiate Cross-Chain Bridge
+                <span class="material-symbols-outlined">trending_flat</span>
+</button>
+<!-- Progress Stepper -->
+<div class="glass-card rounded-2xl p-6">
+<div class="flex justify-between items-center mb-8">
+<h4 class="font-label-caps text-label-caps text-on-surface-variant">Bridge Protocol Sequence</h4>
+<span class="text-xs font-mono-data text-on-surface-variant/40">Est. Time: 4m 20s</span>
+</div>
+<div class="relative">
+<!-- Progress Line -->
+<div class="absolute top-5 left-8 right-8 h-[1px] bg-white/10 z-0"></div>
+<div class="absolute top-5 left-8 w-1/3 h-[1px] bg-primary z-0"></div>
+<div class="grid grid-cols-3 relative z-10">
+<!-- Step 1 -->
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full step-active flex items-center justify-center shadow-[0_0_15px_rgba(244,50,246,0.4)]">
+<span class="material-symbols-outlined text-white text-lg">local_fire_department</span>
+</div>
+<span class="font-mono-data text-xs font-bold text-primary">BURN</span>
+<p class="text-[10px] text-on-surface-variant/60 text-center px-4">Lock assets on Ethereum</p>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant/60 text-lg">verified</span>
+</div>
+<span class="font-mono-data text-xs font-bold text-on-surface-variant/40">ATTEST</span>
+<p class="text-[10px] text-on-surface-variant/40 text-center px-4">Validate message via Wormhole</p>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest border border-white/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant/60 text-lg">token</span>
+</div>
+<span class="font-mono-data text-xs font-bold text-on-surface-variant/40">MINT</span>
+<p class="text-[10px] text-on-surface-variant/40 text-center px-4">Release assets on Polygon</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Info Summary Grid -->
+<div class="grid grid-cols-3 gap-gutter">
+<div class="glass-card rounded-xl p-4 flex flex-col gap-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant/60">SLIPPAGE TOLERANCE</span>
+<span class="font-mono-data text-sm font-bold text-on-surface">0.1%</span>
+</div>
+<div class="glass-card rounded-xl p-4 flex flex-col gap-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant/60">ROUTE</span>
+<span class="font-mono-data text-sm font-bold text-tertiary">Direct Relay</span>
+</div>
+<div class="glass-card rounded-xl p-4 flex flex-col gap-1">
+<span class="font-label-caps text-[10px] text-on-surface-variant/60">EST. GAS COST</span>
+<span class="font-mono-data text-sm font-bold text-on-surface">$12.45</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Terminal Drawer (Contextual) -->
+<aside class="fixed h-full w-80 right-0 top-0 bg-surface-container-low/40 backdrop-blur-2xl border-l border-white/10 flex flex-col p-6 z-50 transform translate-x-72 hover:translate-x-0 transition-transform duration-500 ease-out-cubic">
+<div class="flex items-center gap-2 mb-8">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-caps text-label-caps text-tertiary uppercase">Protocol Terminal</span>
+</div>
+<div class="space-y-6 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+<div class="space-y-2">
+<h5 class="text-[10px] font-mono-data text-on-surface-variant/40 uppercase">System Status</h5>
+<div class="glass-card rounded-lg p-3 border-tertiary/10">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-mono-data">Security Relay</span>
+<span class="text-[10px] text-tertiary">OPTIMAL</span>
+</div>
+<div class="h-1 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-full"></div>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h5 class="text-[10px] font-mono-data text-on-surface-variant/40 uppercase">Activity Log</h5>
+<div class="space-y-3 font-mono-data text-[11px]">
+<div class="flex gap-3 text-on-surface-variant/60">
+<span class="text-tertiary/40">14:02:11</span>
+<span>Requesting bridge quote...</span>
+</div>
+<div class="flex gap-3 text-on-surface-variant/60">
+<span class="text-tertiary/40">14:02:12</span>
+<span>Route identified: Wormhole v2</span>
+</div>
+<div class="flex gap-3 text-on-surface-variant/60">
+<span class="text-tertiary/40">14:02:12</span>
+<span class="text-on-surface">Quote received: 49,975.00 USDC</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto">
+<div class="w-full h-32 rounded-xl bg-cover bg-center mb-4 opacity-40" data-alt="A dark abstract visualization of data flow and network nodes connecting in a 3D grid, using magenta and violet neon colors against a black backdrop, cinematic lighting, sharp focus on central node." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAkvdzHvHu-ergLeKfTZ7PpU4a8gSMoKLM6vKjt4Ynt_DQrP9bfYCjafvjLtdbhBnbFGGW-_znD7qeIArEMvI6bNajyLcFZZ7LNhg8nWBLdOmOhaImsZKiMUtqYe2d1Y1td_g-3GA-NEtT78SdiCO33SDuGDzZypxctCHVpXHocs8Ipqvni6VtQPdKXEVMyPMfwRpXspDESNPql8gShZwv1zLCmxKOH_kbNmhbZFtpEku-qUtcO0ql1yZtx4R4NvlNRMHAtvICHSMg')"></div>
+<p class="font-mono-data text-[10px] text-on-surface-variant/40">NODE_VERIFIED: #MAR-990-22</p>
+</div>
+</aside>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                // Potential for haptic or sound triggers
+            });
+        });
+
+        // Pulsing background effect for cards
+        const glassCards = document.querySelectorAll('.glass-card');
+        window.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            glassCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const cardX = (e.clientX - rect.left) / rect.width;
+                const cardY = (e.clientY - rect.top) / rect.height;
+                
+                if (cardX > 0 && cardX < 1 && cardY > 0 && cardY < 1) {
+                    card.style.borderColor = `rgba(244, 50, 246, ${0.1 + (cardX * 0.1)})`;
+                } else {
+                    card.style.borderColor = `rgba(255, 255, 255, 0.08)`;
+                }
+            });
+        });
+    </script>
+</body></html>

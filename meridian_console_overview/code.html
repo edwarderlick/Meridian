@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Overview</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Hanken+Grotesk:wght@600;700;800&amp;family=JetBrains+Mono:wght@500;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+        }
+        .glass-panel:hover {
+            border-color: rgba(255, 170, 246, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #ffaaf6 0%, #d1bcff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        body {
+            background-color: #0e0e0f;
+            color: #e5e2e3;
+            overflow-x: hidden;
+        }
+        .ease-out-cubic {
+            transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+        }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#800083",
+                        "surface-dim": "#131314",
+                        "secondary-fixed-dim": "#d1bcff",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#002e3a",
+                        "surface-container-low": "#1c1b1c",
+                        "on-secondary-fixed": "#23005b",
+                        "outline-variant": "#554151",
+                        "surface-container-highest": "#353436",
+                        "primary": "#ffaaf6",
+                        "on-primary-fixed": "#380039",
+                        "inverse-primary": "#a800ab",
+                        "surface-container-lowest": "#0e0e0f",
+                        "background": "#131314",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#004e60",
+                        "tertiary-fixed-dim": "#4cd6ff",
+                        "secondary-container": "#7000ff",
+                        "surface-tint": "#ffaaf6",
+                        "outline": "#a2899c",
+                        "primary-fixed-dim": "#ffaaf6",
+                        "surface-container-high": "#2a2a2b",
+                        "secondary-fixed": "#e9ddff",
+                        "on-secondary-fixed-variant": "#5700c9",
+                        "primary-container": "#f432f6",
+                        "on-secondary-container": "#ddcdff",
+                        "on-tertiary-fixed": "#001f28",
+                        "on-surface": "#e5e2e3",
+                        "surface-bright": "#3a393a",
+                        "surface-container": "#201f20",
+                        "surface": "#131314",
+                        "on-tertiary": "#003543",
+                        "on-primary-container": "#4f0051",
+                        "on-secondary": "#3c0090",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "on-background": "#e5e2e3",
+                        "tertiary-container": "#009dc1",
+                        "tertiary": "#4cd6ff",
+                        "on-primary": "#5b005d",
+                        "inverse-on-surface": "#313031",
+                        "inverse-surface": "#e5e2e3",
+                        "secondary": "#d1bcff",
+                        "tertiary-fixed": "#b7eaff",
+                        "surface-variant": "#353436",
+                        "primary-fixed": "#ffd7f6",
+                        "on-surface-variant": "#dabfd3"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "margin-desktop": "48px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "container-max": "1440px",
+                        "stack-lg": "32px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "mono-data": ["JetBrains Mono"],
+                        "headline-xl": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface-container-lowest font-body-md text-on-surface antialiased">
+<!-- Atmospheric Background Animation -->
+
+<!-- SideNavBar Shell -->
+<aside class="fixed h-full w-64 left-0 top-0 bg-surface/60 backdrop-blur-xl border-r border-white/5 shadow-2xl shadow-secondary/10 flex flex-col py-8 z-50">
+<div class="px-6 mb-12">
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-surface tracking-tight">Meridian Console</h1>
+<p class="font-label-caps text-[10px] text-primary mt-1 uppercase tracking-widest opacity-80">Institutional Treasury</p>
+</div>
+<nav class="flex-1 space-y-1 px-4">
+<!-- Active Tab: Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-2 border-primary hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-body-md">Treasury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">lock_open</span>
+<span class="font-body-md">Vaults</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">auto_awesome</span>
+<span class="font-body-md">Strategist</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-body-md">Market Watch</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-body-md">Compliance</span>
+</a>
+</nav>
+<div class="px-4 mt-auto space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-body-md">Support</span>
+</a>
+<div class="mt-6 px-2">
+<button class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-primary to-secondary text-on-primary-container font-bold text-sm hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/20">
+                    Connect Strategy
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<main class="ml-64 min-h-screen">
+<!-- TopNavBar Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-margin-desktop z-40">
+<div class="flex items-center flex-1 max-w-md">
+<div class="relative w-full group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant/50">search</span>
+<input class="w-full bg-white/5 border border-white/10 rounded-full py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-on-surface-variant/40" placeholder="Search assets, vaults or protocols..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-8">
+<nav class="hidden lg:flex items-center gap-8 font-body-sm">
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Governance</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:text-primary transition-all" href="#">Bridge</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="relative p-2 text-on-surface-variant hover:text-primary transition-all">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-background"></span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 border border-primary/30 rounded-full text-primary font-bold text-sm hover:bg-primary/10 transition-all active:scale-95">
+                        Connect Wallet
+                    </button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">account_circle</span>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="pt-28 pb-12 px-margin-desktop max-w-container-max mx-auto space-y-stack-lg relative z-10">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Overview</h2>
+<p class="text-on-surface-variant flex items-center gap-2 mt-1">
+<span class="w-2 h-2 bg-green-500 rounded-full animate-pulse-soft"></span>
+                        Real-time treasury health across 4 networks
+                    </p>
+</div>
+<div class="flex gap-3">
+<div class="bg-surface-container-high/50 px-4 py-2 rounded-lg border border-white/5 flex items-center gap-3">
+<span class="text-xs font-label-caps opacity-50 uppercase">Network Status</span>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-blue-600 border border-background flex items-center justify-center text-[10px] font-bold">E</div>
+<div class="w-6 h-6 rounded-full bg-purple-600 border border-background flex items-center justify-center text-[10px] font-bold">P</div>
+<div class="w-6 h-6 rounded-full bg-red-600 border border-background flex items-center justify-center text-[10px] font-bold">A</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+<div class="flex justify-between items-start relative z-10">
+<span class="font-label-caps text-xs opacity-60">TOTAL BALANCE (USD)</span>
+<span class="material-symbols-outlined text-primary">account_balance</span>
+</div>
+<div class="mt-4 relative z-10">
+<div class="font-mono-data text-4xl font-bold tracking-tight">$42,912,408.82</div>
+<div class="text-green-400 text-sm flex items-center gap-1 mt-1 font-mono-data">
+<span class="material-symbols-outlined text-sm">trending_up</span> +2.4% (24h)
+                        </div>
+</div>
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-primary/10 blur-3xl rounded-full"></div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+<div class="flex justify-between items-start relative z-10">
+<span class="font-label-caps text-xs opacity-60">24H ACTIVITY</span>
+<span class="material-symbols-outlined text-secondary">swap_horiz</span>
+</div>
+<div class="mt-4 relative z-10">
+<div class="font-mono-data text-4xl font-bold tracking-tight">1,842 TX</div>
+<div class="text-on-surface-variant/60 text-sm flex items-center gap-1 mt-1 font-mono-data">
+<span class="material-symbols-outlined text-sm">bolt</span> Avg latency 1.2s
+                        </div>
+</div>
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-secondary/10 blur-3xl rounded-full"></div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+<div class="flex justify-between items-start relative z-10">
+<span class="font-label-caps text-xs opacity-60">ACTIVE MODULES</span>
+<span class="material-symbols-outlined text-tertiary">dashboard_customize</span>
+</div>
+<div class="mt-4 relative z-10">
+<div class="font-mono-data text-4xl font-bold tracking-tight">12 / 14</div>
+<div class="flex items-center gap-1 mt-1">
+<div class="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+<div class="w-[85%] h-full bg-tertiary"></div>
+</div>
+<span class="text-xs font-mono-data text-tertiary">85% Capacity</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 w-32 h-32 bg-tertiary/10 blur-3xl rounded-full"></div>
+</div>
+</div>
+<!-- Portfolio Trajectory Chart Section -->
+<div class="glass-panel p-8 rounded-xl">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Portfolio Trajectory</h3>
+<p class="text-on-surface-variant font-body-sm">Aggregated performance across all vaults (30D)</p>
+</div>
+<div class="flex bg-white/5 p-1 rounded-lg border border-white/5">
+<button class="px-3 py-1 text-xs font-label-caps rounded-md bg-white/10 text-on-surface">1D</button>
+<button class="px-3 py-1 text-xs font-label-caps rounded-md text-on-surface-variant hover:text-on-surface">1W</button>
+<button class="px-3 py-1 text-xs font-label-caps rounded-md text-on-surface-variant hover:text-on-surface">1M</button>
+<button class="px-3 py-1 text-xs font-label-caps rounded-md text-on-surface-variant hover:text-on-surface">1Y</button>
+</div>
+</div>
+<div class="h-[400px] w-full relative">
+<!-- SVG Chart Simulation -->
+<svg class="w-full h-full preserve-3d" viewbox="0 0 1000 400">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#ffaaf6" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#7000ff" stop-opacity="0"></stop>
+</lineargradient>
+<lineargradient id="lineGradient" x1="0" x2="1" y1="0" y2="0">
+<stop offset="0%" stop-color="#ffaaf6"></stop>
+<stop offset="100%" stop-color="#7000ff"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" x1="0" x2="1000" y1="100" y2="100"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" x1="0" x2="1000" y1="200" y2="200"></line>
+<line stroke="rgba(255,255,255,0.05)" stroke-dasharray="4" x1="0" x2="1000" y1="300" y2="300"></line>
+<!-- Area Fill -->
+<path d="M0,350 Q100,340 200,300 T400,280 T600,200 T800,150 T1000,100 V400 H0 Z" fill="url(#chartGradient)"></path>
+<!-- Chart Line -->
+<path d="M0,350 Q100,340 200,300 T400,280 T600,200 T800,150 T1000,100" fill="none" stroke="url(#lineGradient)" stroke-linecap="round" stroke-width="3"></path>
+<!-- Pulse Point -->
+<circle cx="1000" cy="100" fill="#ffaaf6" r="4">
+<animate attributename="r" dur="2s" repeatcount="indefinite" values="4;7;4"></animate>
+<animate attributename="opacity" dur="2s" repeatcount="indefinite" values="1;0.5;1"></animate>
+</circle>
+</svg>
+<!-- Axis Labels -->
+<div class="absolute bottom-0 left-0 right-0 flex justify-between px-2 pt-4 border-t border-white/5 text-[10px] font-mono-data opacity-40 uppercase">
+<span>OCT 01</span>
+<span>OCT 08</span>
+<span>OCT 15</span>
+<span>OCT 22</span>
+<span>OCT 30</span>
+</div>
+</div>
+</div>
+<!-- Recent Activity Table -->
+<div class="glass-panel rounded-xl overflow-hidden">
+<div class="p-6 border-b border-white/5 flex justify-between items-center">
+<h3 class="font-headline-lg text-[20px] text-on-surface">Recent Activity</h3>
+<button class="text-primary text-xs font-label-caps hover:underline">View All History</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-xs font-label-caps text-on-surface-variant/60 uppercase">
+<th class="px-6 py-4 font-normal">Transaction</th>
+<th class="px-6 py-4 font-normal">Status</th>
+<th class="px-6 py-4 font-normal">Amount</th>
+<th class="px-6 py-4 font-normal">Network</th>
+<th class="px-6 py-4 font-normal text-right">Time</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-container/10 border border-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_downward</span>
+</div>
+<div>
+<div class="text-sm font-semibold">Deposit to USDC-WETH Vault</div>
+<div class="text-xs text-on-surface-variant/60 font-mono-data">0x4a...f39e</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20 uppercase tracking-wider">Completed</span>
+</td>
+<td class="px-6 py-4 font-mono-data text-sm">
+                                    +45,000.00 USDC
+                                </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-xs">
+<div class="w-4 h-4 rounded-full bg-blue-500"></div>
+<span>Ethereum</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-xs text-on-surface-variant/60 font-mono-data">
+                                    2 mins ago
+                                </td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-secondary-container/10 border border-secondary/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">swap_calls</span>
+</div>
+<div>
+<div class="text-sm font-semibold">Contract Interaction</div>
+<div class="text-xs text-on-surface-variant/60 font-mono-data">Meridian Optimizer V3</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold border border-primary/20 uppercase tracking-wider animate-pulse">Syncing</span>
+</td>
+<td class="px-6 py-4 font-mono-data text-sm">
+                                    -0.42 ETH
+                                </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-xs">
+<div class="w-4 h-4 rounded-full bg-purple-500"></div>
+<span>Polygon</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-xs text-on-surface-variant/60 font-mono-data">
+                                    14 mins ago
+                                </td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-tertiary-container/10 border border-tertiary/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">arrow_upward</span>
+</div>
+<div>
+<div class="text-sm font-semibold">Yield Harvest</div>
+<div class="text-xs text-on-surface-variant/60 font-mono-data">Compound Finance</div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 rounded-full bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20 uppercase tracking-wider">Completed</span>
+</td>
+<td class="px-6 py-4 font-mono-data text-sm text-tertiary">
+                                    +12,480.12 USDC
+                                </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-xs">
+<div class="w-4 h-4 rounded-full bg-blue-500"></div>
+<span>Ethereum</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right text-xs text-on-surface-variant/60 font-mono-data">
+                                    1 hour ago
+                                </td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Terminal Sidebar (Contextual Info) -->
+<div class="fixed h-full w-80 right-0 top-0 bg-surface-container-low/40 backdrop-blur-2xl border-l border-white/10 flex flex-col p-6 z-50 pointer-events-auto hidden xl:flex">
+<div class="flex items-center gap-2 mb-8">
+<span class="material-symbols-outlined text-tertiary text-sm">terminal</span>
+<h4 class="font-label-caps text-tertiary text-sm">Protocol Terminal</h4>
+</div>
+<div class="space-y-6 flex-1">
+<div>
+<span class="font-mono-data text-[10px] text-on-surface-variant/40 block mb-2">NETWORK HEALTH</span>
+<div class="space-y-3">
+<div class="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+<span class="text-xs font-mono-data">Mainnet</span>
+</div>
+<span class="text-[10px] font-mono-data opacity-60">12ms</span>
+</div>
+<div class="flex justify-between items-center bg-white/5 p-3 rounded-lg border border-white/5">
+<div class="flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>
+<span class="text-xs font-mono-data">L2 Optimism</span>
+</div>
+<span class="text-[10px] font-mono-data opacity-60">124ms</span>
+</div>
+</div>
+</div>
+<div>
+<span class="font-mono-data text-[10px] text-on-surface-variant/40 block mb-2">LIVE ACTIVITY FEED</span>
+<div class="space-y-4 font-mono-data text-[11px] leading-relaxed">
+<div class="text-on-surface-variant/80 border-l border-tertiary/30 pl-3 py-1">
+<span class="text-tertiary">[14:02:11]</span> Strategy <span class="text-primary">ALPHA-9</span> rebalanced $2.1M into Curve pool.
+                            </div>
+<div class="text-on-surface-variant/80 border-l border-white/10 pl-3 py-1">
+<span class="text-tertiary">[13:58:42]</span> Compliance check passed for Vault-04 transfer.
+                            </div>
+<div class="text-on-surface-variant/80 border-l border-white/10 pl-3 py-1">
+<span class="text-tertiary">[13:45:01]</span> Gas prices stabilized at 18 gwei.
+                            </div>
+</div>
+</div>
+<div class="glass-panel p-4 rounded-xl border-tertiary/20">
+<div class="flex items-center gap-3 mb-3">
+<span class="material-symbols-outlined text-tertiary">smart_toy</span>
+<span class="text-xs font-bold">AI STRATEGIST</span>
+</div>
+<p class="text-xs text-on-surface-variant/80 italic">"Detected 0.4% arbitrage opportunity between Uniswap and Sushiswap for WBTC/USDC. Execute rebalance?"</p>
+<div class="mt-4 flex gap-2">
+<button class="flex-1 py-2 text-[10px] font-bold bg-tertiary/20 text-tertiary rounded-lg hover:bg-tertiary/30 transition-all border border-tertiary/30">APPROVE</button>
+<button class="flex-1 py-2 text-[10px] font-bold bg-white/5 text-on-surface-variant rounded-lg hover:bg-white/10 transition-all border border-white/5">DISMISS</button>
+</div>
+</div>
+</div>
+<div class="mt-auto border-t border-white/5 pt-6">
+<div class="flex items-center gap-3 text-on-surface-variant/40">
+<span class="material-symbols-outlined text-sm">sensors</span>
+<span class="text-[10px] font-mono-data">CONNECTED TO MERIDIAN NODE #0412</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions and subtle effects
+        document.querySelectorAll('.glass-panel').forEach(panel => {
+            panel.addEventListener('mousemove', (e) => {
+                const rect = panel.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                panel.style.setProperty('--mouse-x', `${x}px`);
+                panel.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+
+        // Simulating some numbers ticking up/down
+        setInterval(() => {
+            const elements = document.querySelectorAll('.font-mono-data.text-4xl');
+            elements.forEach((el, index) => {
+                if(index === 0) {
+                    const current = parseFloat(el.textContent.replace('$', '').replace(/,/g, ''));
+                    const newVal = current + (Math.random() * 2 - 0.5);
+                    el.textContent = '$' + newVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                }
+            });
+        }, 3000);
+    </script>
+</body></html>

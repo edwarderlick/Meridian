@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meridian Console | Parametric Insurance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            --ease-out-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+        }
+        body {
+            background-color: #131314;
+            color: #e5e2e3;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+        .glass-card:hover {
+            border-color: rgba(255, 170, 246, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .vibrant-gradient {
+            background: linear-gradient(135deg, #f432f6 0%, #7000ff 100%);
+        }
+        .text-gradient {
+            background: linear-gradient(to right, #ffaaf6, #d1bcff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gauge-svg {
+            transform: rotate(-90deg);
+        }
+        .animate-stagger-1 { animation-delay: 100ms; }
+        .animate-stagger-2 { animation-delay: 200ms; }
+        .animate-stagger-3 { animation-delay: 300ms; }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.98) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .fade-in {
+            animation: fadeInScale 0.4s var(--ease-out-cubic) forwards;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#ffaaf6",
+                        "secondary": "#d1bcff",
+                        "tertiary": "#4cd6ff",
+                        "background": "#131314",
+                        "surface": "#131314",
+                        "surface-container": "#201f20",
+                        "surface-container-low": "#1c1b1c",
+                        "on-surface": "#e5e2e3",
+                        "on-surface-variant": "#dabfd3",
+                        "primary-container": "#f432f6",
+                        "secondary-container": "#7000ff",
+                        "tertiary-container": "#009dc1"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "label-caps": ["JetBrains Mono"],
+                        "mono-data": ["JetBrains Mono"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-xl": ["Hanken Grotesk"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-body-md">
+<!-- Global Background Shader -->
+<div class="fixed inset-0 z-0 pointer-events-none">
+
+<div class="absolute inset-0 bg-radial-at-tr from-secondary-container/10 via-transparent to-transparent"></div>
+<div class="absolute inset-0 bg-radial-at-bl from-primary-container/5 via-transparent to-transparent"></div>
+</div>
+<!-- Side Navigation Shell -->
+<aside class="fixed h-full w-64 left-0 top-0 bg-surface/60 backdrop-blur-xl border-r border-white/5 flex flex-col py-8 z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-lg text-3xl font-bold text-on-surface tracking-tight">Meridian</h1>
+<p class="font-label-caps text-[10px] text-primary tracking-widest uppercase mt-1">Institutional Treasury</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<!-- Navigation Items Mapping -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">grid_view</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">account_balance_wallet</span>
+<span class="font-body-md">Treasury</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">lock_open</span>
+<span class="font-body-md">Vaults</span>
+</a>
+<!-- ACTIVE: Marketplace/Insurance assumed as current context -->
+<a class="flex items-center gap-3 px-4 py-3 text-primary font-bold border-r-2 border-primary bg-primary/5 rounded-l-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<span class="font-body-md">Marketplace</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">insights</span>
+<span class="font-body-md">Market Watch</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant font-medium hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">verified_user</span>
+<span class="font-body-md">Compliance</span>
+</a>
+</nav>
+<div class="px-4 mt-auto pt-8 space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant/70 text-sm hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant/70 text-sm hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">help_outline</span>
+<span>Support</span>
+</a>
+</div>
+</aside>
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-background/80 backdrop-blur-md border-b border-white/5 flex justify-between items-center px-12 z-40">
+<div class="flex items-center gap-8">
+<div class="flex gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-all font-body-sm" href="#">Governance</a>
+<a class="text-on-surface-variant hover:text-primary transition-all font-body-sm" href="#">Analytics</a>
+<a class="text-on-surface-variant hover:text-primary transition-all font-body-sm" href="#">Bridge</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary p-2">notifications</button>
+<button class="vibrant-gradient text-white px-6 py-2 rounded-full font-bold text-sm shadow-lg shadow-primary/20 scale-98 active:scale-95 transition-transform">
+                Connect Wallet
+            </button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="ml-64 pt-28 px-12 pb-12 relative z-10 max-w-[1600px]">
+<!-- Header & Tabs -->
+<div class="flex justify-between items-end mb-10 fade-in">
+<div>
+<nav class="flex gap-2 mb-4">
+<span class="text-primary/60 font-label-caps text-[10px]">MERIDIAN</span>
+<span class="text-on-surface-variant/40 font-label-caps text-[10px]">—</span>
+<span class="text-on-surface-variant font-label-caps text-[10px]">PARAMETRIC COVERAGE</span>
+</nav>
+<h2 class="font-headline-xl text-5xl font-extrabold text-on-surface tracking-tighter">Insurance <span class="text-gradient">Marketplace</span></h2>
+<p class="text-on-surface-variant/80 mt-4 max-w-xl text-lg leading-relaxed">
+                    Decentralized, oracle-triggered risk mitigation for institutional liquidity pools. Instantly settle claims based on verifiable on-chain data.
+                </p>
+</div>
+<div class="flex bg-surface-container-low/50 p-1 rounded-xl border border-white/5 backdrop-blur-md">
+<button class="px-6 py-2 rounded-lg bg-primary/10 text-primary font-bold text-sm">Active Pools</button>
+<button class="px-6 py-2 rounded-lg text-on-surface-variant/60 font-medium text-sm hover:text-on-surface transition-colors">My Coverage</button>
+<button class="px-6 py-2 rounded-lg text-on-surface-variant/60 font-medium text-sm hover:text-on-surface transition-colors">Analytics</button>
+</div>
+</div>
+<!-- Layout Grid: 8 cols for cards, 4 cols for Underwriter Panel -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Coverage Products Grid -->
+<div class="col-span-12 lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 1: Stablecoin Depeg -->
+<div class="glass-card p-8 rounded-3xl flex flex-col fade-in animate-stagger-1 relative overflow-hidden group">
+<div class="flex justify-between items-start mb-6">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-xl">payments</span>
+<span class="font-label-caps text-xs text-primary/80">STABLECOIN DEPEG</span>
+</div>
+<h3 class="font-headline-lg text-2xl font-bold">USDC Integrity Vault</h3>
+</div>
+<span class="bg-green-500/10 text-green-400 text-[10px] font-bold px-2 py-1 rounded-md border border-green-500/20">LIVE</span>
+</div>
+<div class="flex items-center justify-between mb-8">
+<div class="relative w-32 h-32">
+<svg class="gauge-svg w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="40" stroke="rgba(255,255,255,0.05)" stroke-dasharray="251.2" stroke-width="8"></circle>
+<circle class="transition-all duration-1000" cx="50" cy="50" fill="none" r="40" stroke="url(#gradient1)" stroke-dasharray="251.2" stroke-dashoffset="50" stroke-width="8"></circle>
+<defs>
+<lineargradient id="gradient1" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:#ffaaf6"></stop>
+<stop offset="100%" style="stop-color:#7000ff"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold text-on-surface">$0.98</span>
+<span class="text-[9px] text-on-surface-variant/60 font-label-caps">TRIGGER</span>
+</div>
+</div>
+<div class="flex-1 pl-8 space-y-3">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Max Coverage</span>
+<span class="font-mono-data">$25.0M</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Annual Premium</span>
+<span class="font-mono-data text-primary">1.24%</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Oracle</span>
+<span class="font-mono-data">Chainlink</span>
+</div>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl border border-white/10 font-bold hover:bg-white/5 transition-all text-sm group-hover:border-primary/40">
+                        View Coverage Details
+                    </button>
+</div>
+<!-- Card 2: Smart Contract Exploit -->
+<div class="glass-card p-8 rounded-3xl flex flex-col fade-in animate-stagger-2 group">
+<div class="flex justify-between items-start mb-6">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-secondary text-xl">code_off</span>
+<span class="font-label-caps text-xs text-secondary/80">PROTOCOL RISK</span>
+</div>
+<h3 class="font-headline-lg text-2xl font-bold">Curve Finance Shield</h3>
+</div>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded-md border border-primary/20">CAPACITY 82%</span>
+</div>
+<div class="flex items-center justify-between mb-8">
+<div class="relative w-32 h-32">
+<svg class="gauge-svg w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="40" stroke="rgba(255,255,255,0.05)" stroke-dasharray="251.2" stroke-width="8"></circle>
+<circle cx="50" cy="50" fill="none" r="40" stroke="#d1bcff" stroke-dasharray="251.2" stroke-dashoffset="180" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold text-on-surface">6/10</span>
+<span class="text-[9px] text-on-surface-variant/60 font-label-caps">HEALTH</span>
+</div>
+</div>
+<div class="flex-1 pl-8 space-y-3">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Total Value Insured</span>
+<span class="font-mono-data">$412.8M</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Annual Premium</span>
+<span class="font-mono-data text-primary">3.15%</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Payout Trigger</span>
+<span class="font-mono-data">TVL -20%</span>
+</div>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl border border-white/10 font-bold hover:bg-white/5 transition-all text-sm group-hover:border-primary/40">
+                        Purchase Protection
+                    </button>
+</div>
+<!-- Card 3: Layer 2 Downtime -->
+<div class="glass-card p-8 rounded-3xl flex flex-col fade-in animate-stagger-3 relative group">
+<div class="flex justify-between items-start mb-6">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-tertiary text-xl">cloud_off</span>
+<span class="font-label-caps text-xs text-tertiary/80">L2 INFRASTRUCTURE</span>
+</div>
+<h3 class="font-headline-lg text-2xl font-bold">Arbitrum Uptime Guard</h3>
+</div>
+<span class="bg-surface-container-highest text-on-surface-variant text-[10px] font-bold px-2 py-1 rounded-md border border-white/10">COMING SOON</span>
+</div>
+<div class="flex items-center justify-between mb-8 opacity-40 grayscale transition-all group-hover:grayscale-0">
+<div class="relative w-32 h-32">
+<svg class="gauge-svg w-full h-full" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="8"></circle>
+<circle cx="50" cy="50" fill="none" r="40" stroke="#4cd6ff" stroke-dasharray="251.2" stroke-dashoffset="120" stroke-width="8"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold text-on-surface">12h</span>
+<span class="text-[9px] text-on-surface-variant/60 font-label-caps">LAG</span>
+</div>
+</div>
+<div class="flex-1 pl-8 space-y-3">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Expected Premium</span>
+<span class="font-mono-data">~0.8%</span>
+</div>
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">Min Stake</span>
+<span class="font-mono-data">50,000 ARB</span>
+</div>
+</div>
+</div>
+<button class="w-full py-4 rounded-xl bg-white/5 font-bold text-on-surface-variant/50 cursor-not-allowed text-sm">
+                        Notify on Launch
+                    </button>
+<div class="absolute inset-0 pointer-events-none bg-surface/20 backdrop-grayscale-[0.5]"></div>
+</div>
+<!-- Card 4: New Product Placeholder -->
+<div class="border-2 border-dashed border-white/5 p-8 rounded-3xl flex flex-col items-center justify-center text-center fade-in animate-stagger-3 hover:border-primary/20 transition-all cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-on-surface-variant/40 group-hover:text-primary transition-colors">add</span>
+</div>
+<h4 class="font-headline-lg text-lg font-bold text-on-surface-variant">Propose New Coverage</h4>
+<p class="text-on-surface-variant/40 text-sm mt-2 max-w-[200px]">Define parameters for a new risk vault and find liquidity.</p>
+</div>
+</div>
+<!-- Side Panel: Underwriter Pool & Activity -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<!-- Underwriter Pool Card -->
+<section class="glass-card p-8 rounded-3xl fade-in animate-stagger-2">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-lg text-xl font-bold">Underwriter Pool</h3>
+<span class="material-symbols-outlined text-secondary">shield_with_heart</span>
+</div>
+<div class="p-6 bg-surface-container-highest/40 rounded-2xl mb-8 border border-white/5">
+<div class="flex justify-between items-end mb-2">
+<span class="text-on-surface-variant text-sm font-medium">Total Pool TVL</span>
+<span class="text-3xl font-extrabold font-headline-lg">$1.24B</span>
+</div>
+<div class="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+<div class="h-full vibrant-gradient w-[65%]"></div>
+</div>
+<div class="flex justify-between mt-4 text-[11px] font-label-caps text-on-surface-variant/60">
+<span>RESERVE: $806M</span>
+<span>UTILIZED: $434M</span>
+</div>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+<div>
+<p class="text-sm font-bold">Staking Yield</p>
+<p class="text-[10px] text-on-surface-variant">Global Average</p>
+</div>
+</div>
+<span class="font-mono-data text-primary font-bold">8.42% APY</span>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">account_balance</span>
+</div>
+<div>
+<p class="text-sm font-bold">Loss Ratio</p>
+<p class="text-[10px] text-on-surface-variant">Last 12 Months</p>
+</div>
+</div>
+<span class="font-mono-data text-on-surface font-bold">2.1%</span>
+</div>
+</div>
+<button class="w-full py-4 rounded-2xl bg-white text-background font-black uppercase text-xs tracking-widest hover:bg-primary transition-all shadow-xl shadow-white/5">
+                        Stake &amp; Earn Yield
+                    </button>
+</section>
+<!-- Recent Claims Activity -->
+<section class="glass-card p-8 rounded-3xl fade-in animate-stagger-3">
+<h3 class="font-headline-lg text-lg font-bold mb-6">Recent Claims</h3>
+<div class="space-y-6">
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-2 h-2 rounded-full bg-green-500 mt-2"></div>
+<div>
+<div class="flex justify-between items-start w-full">
+<p class="text-sm font-bold">USDT Divergence Event</p>
+<span class="text-[10px] font-mono-data text-on-surface-variant/60">2d ago</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Oracle triggered at $0.985. $1.2M settled via smart contract.</p>
+<div class="mt-3 flex gap-2">
+<span class="text-[10px] bg-white/5 px-2 py-1 rounded border border-white/10 font-mono-data">TX: 0x8a2...3f1</span>
+</div>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-shrink-0 w-2 h-2 rounded-full bg-on-surface-variant/30 mt-2"></div>
+<div>
+<div class="flex justify-between items-start w-full">
+<p class="text-sm font-bold">Polygon Bridge Sync</p>
+<span class="text-[10px] font-mono-data text-on-surface-variant/60">5d ago</span>
+</div>
+<p class="text-xs text-on-surface-variant mt-1 leading-relaxed">Potential delay detected. Monitoring active. No claim triggered.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Coming Soon Teaser -->
+<div class="p-6 rounded-3xl bg-gradient-to-br from-primary-container/20 to-secondary-container/20 border border-primary/20 relative overflow-hidden fade-in animate-stagger-3">
+<div class="relative z-10">
+<h4 class="font-headline-lg text-md font-bold mb-2">Multi-Chain Sync</h4>
+<p class="text-xs text-on-surface-variant leading-relaxed">Coming Q4: Cross-chain parametric triggers for Base, Optimism, and Avalanche.</p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-8xl">hub</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Terminal Sidebar (AI Assistant) -->
+<aside class="fixed h-full w-80 right-0 top-0 bg-surface-container-low/40 backdrop-blur-2xl border-l border-white/10 flex flex-col p-6 z-30 translate-x-72 hover:translate-x-0 transition-transform duration-500 ease-out group/terminal">
+<!-- Tab Handle -->
+<div class="absolute left-0 top-1/2 -translate-x-full bg-surface-container-low border border-white/10 p-3 rounded-l-xl cursor-pointer group-hover/terminal:opacity-0 transition-opacity shadow-[-10px_0_20px_rgba(0,0,0,0.5)]">
+<span class="material-symbols-outlined text-primary">smart_toy</span>
+</div>
+<div class="flex items-center gap-3 mb-8">
+<span class="material-symbols-outlined text-tertiary">smart_toy</span>
+<h4 class="font-label-caps text-xs text-tertiary tracking-widest">TERMINAL</h4>
+</div>
+<div class="flex-1 space-y-6 overflow-y-auto pr-2 custom-scrollbar">
+<div class="p-4 rounded-xl bg-white/5 border border-white/5 font-mono-data text-xs leading-relaxed text-on-surface-variant">
+<span class="text-tertiary font-bold mb-2 block">System Status</span>
+                &gt; Monitoring 42 coverage vaults<br/>
+                &gt; Oracle latency: 124ms<br/>
+                &gt; TVL Change (24h): +4.2%<br/>
+<span class="mt-4 block text-primary animate-pulse">&gt; Ready for query...</span>
+</div>
+<div class="space-y-4">
+<div class="flex flex-col gap-2">
+<div class="bg-tertiary-container/20 p-3 rounded-lg rounded-tr-none self-end max-w-[80%]">
+<p class="font-mono-data text-[12px] text-tertiary">Analyze depeg risk for Curve 3pool.</p>
+</div>
+<div class="bg-white/5 p-3 rounded-lg rounded-tl-none self-start max-w-[90%]">
+<p class="font-mono-data text-[12px] text-on-surface-variant">Current depeg risk is LOW (1.2%). Historical volatility suggests 0.998 support level remains strong. Suggest USDC Integrity Vault for 100% hedge.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto relative">
+<input class="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 font-mono-data text-xs focus:ring-1 focus:ring-tertiary focus:border-tertiary outline-none transition-all" placeholder="Ask Terminal..." type="text"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-tertiary/60 cursor-pointer">send</span>
+</div>
+</aside>
+<script>
+        // Micro-interaction for the radial gauges
+        document.querySelectorAll('.gauge-svg circle').forEach(circle => {
+            if (circle.getAttribute('stroke-dashoffset') !== '251.2') {
+                const finalOffset = circle.getAttribute('stroke-dashoffset');
+                circle.style.strokeDashoffset = '251.2';
+                setTimeout(() => {
+                    circle.style.strokeDashoffset = finalOffset;
+                }, 500);
+            }
+        });
+
+        // Hover lighting effect on main cards
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                card.style.background = `radial-gradient(400px circle at ${x}px ${y}px, rgba(255,170,246,0.06), transparent 40%), rgba(255, 255, 255, 0.03)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.background = `rgba(255, 255, 255, 0.03)`;
+            });
+        });
+    </script>
+</body></html>
