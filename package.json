@@ -12,6 +12,11 @@
     "lint": "tsc --noEmit",
     "postinstall": "patch-package"
   },
+  "overrides": {
+    "jwks-rsa": {
+      "jose": "5.10.0"
+    }
+  },
   "dependencies": {
     "@bgd-labs/aave-address-book": "^4.44.22",
     "@circle-fin/adapter-solana-kit": "^1.5.2",
