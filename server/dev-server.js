@@ -16,14 +16,19 @@ app.use(express.json())
 
 // Express 5 (path-to-regexp v8) requires a named wildcard, unlike Express 4's bare `*`.
 // req.query isn't reliably mutable in Express 5, so the path is passed explicitly.
-// The swap route is registered before the generic /api/circle/* catch-all so it
-// takes precedence for that subpath (Express matches routes in registration order).
-app.all('/api/circle/swap/*splat', (req, res) => {
-  swapHandler(req, res, req.params.splat.join('/'))
-})
+// Swap is dispatched from this same catch-all via a path-prefix check, matching
+// api/circle/[...path].js's single-route structure — a separate swap route here used to
+// rely on Express's registration-order precedence, which is exactly what masked the
+// production-only routing gap Vercel's nested-catch-all files turned out to have.
+const SWAP_PREFIX = 'swap/'
 
 app.all('/api/circle/*splat', (req, res) => {
-  circleHandler(req, res, req.params.splat.join('/'))
+  const path = req.params.splat.join('/')
+  if (path === 'swap' || path.startsWith(SWAP_PREFIX)) {
+    swapHandler(req, res, path.slice(SWAP_PREFIX.length))
+    return
+  }
+  circleHandler(req, res, path)
 })
 
 app.post('/api/auth/nonce', nonceHandler)
