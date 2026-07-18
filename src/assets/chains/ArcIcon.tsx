@@ -1,16 +1,16 @@
 import type { SVGProps } from 'react'
+import arcLogo from './arc-logo.jpg'
 
+/** Official Arc logo (Circle Brand Kit), clipped to the same circular frame every other chain icon in this set uses. */
 export default function ArcIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <circle cx="16" cy="16" r="16" fill="#F432F6" />
-      <path
-        d="M7 21C7 13.8 12.3 8 19.5 8"
-        stroke="white"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-      <circle cx="19.8" cy="8.2" r="2.4" fill="white" />
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" {...props}>
+      <defs>
+        <clipPath id="arc-logo-clip">
+          <circle cx="16" cy="16" r="16" />
+        </clipPath>
+      </defs>
+      <image href={arcLogo} x="0" y="0" width="32" height="32" preserveAspectRatio="xMidYMid slice" clipPath="url(#arc-logo-clip)" />
     </svg>
   )
 }

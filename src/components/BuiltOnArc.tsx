@@ -1,4 +1,5 @@
 import { useSimulatedNetworkStatus } from '../hooks/useSimulatedNetworkStatus'
+import arcLogo from '../assets/chains/arc-logo.jpg'
 
 const STATUS_LABEL: Record<string, string> = {
   healthy: 'Healthy',
@@ -18,7 +19,10 @@ export default function BuiltOnArc() {
       </div>
       <div className="max-w-container-max mx-auto px-margin-desktop text-center relative z-10">
         <p className="section-label text-primary mb-4 tracking-[0.16em]">Foundation</p>
-        <h2 className="font-headline-xl text-headline-xl mb-8 tracking-tight">Built on Arc Foundation</h2>
+        <h2 className="font-headline-xl text-headline-xl mb-8 tracking-tight flex items-center justify-center gap-3">
+          <img src={arcLogo} alt="Arc" className="w-8 h-8 rounded-full shrink-0" />
+          Built on Arc
+        </h2>
         <p className="font-body-md text-on-surface-variant/75 max-w-3xl mx-auto mb-16 text-lg leading-relaxed">
           Meridian leverages the Arc App Kit and Circle&apos;s CCTP to provide the most secure, battle-tested framework
           for institutional liquidity routing. Our modular architecture is built for the multi-chain future.

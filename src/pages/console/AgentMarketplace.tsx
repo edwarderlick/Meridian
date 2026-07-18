@@ -62,7 +62,7 @@ export default function AgentMarketplace() {
                 <span className="material-symbols-outlined">storefront</span>
               </div>
               <p className="empty-state-title">No agent services listed yet</p>
-              <p className="empty-state-desc">Services published to the Arc Agent Marketplace will appear here</p>
+              <p className="empty-state-desc">Services published to the Agent Marketplace will appear here</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter">

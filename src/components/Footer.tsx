@@ -1,4 +1,5 @@
 import { useSimulatedNetworkStatus } from '../hooks/useSimulatedNetworkStatus'
+import arcLogo from '../assets/chains/arc-logo.jpg'
 
 interface FooterLink {
   label: string
@@ -117,8 +118,9 @@ export default function Footer() {
         </div>
       </div>
       <div className="px-margin-desktop max-w-container-max mx-auto pt-8 border-t border-white/[0.05] flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="font-body-sm text-xs text-on-surface-variant/45">
-          © 2024 Meridian Labs. Built on Arc Foundation.
+        <div className="font-body-sm text-xs text-on-surface-variant/45 flex items-center gap-2">
+          <img src={arcLogo} alt="Arc" className="w-4 h-4 rounded-full shrink-0" />
+          © 2024 Meridian Labs. Built on Arc.
         </div>
         <a
           href="https://testnet.arcscan.app"
