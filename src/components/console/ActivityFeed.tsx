@@ -40,6 +40,10 @@ const TYPE_STYLE: Record<ActivityType, { icon: string; well: string; accent: str
   },
   aave_deposit: { icon: 'savings', well: 'bg-primary/10 border-primary/15', accent: 'text-primary' },
   aave_withdraw: { icon: 'savings', well: 'bg-tertiary/10 border-tertiary/15', accent: 'text-tertiary' },
+  uniswap_deposit: { icon: 'water_drop', well: 'bg-primary/10 border-primary/15', accent: 'text-primary' },
+  uniswap_withdraw: { icon: 'water_drop', well: 'bg-tertiary/10 border-tertiary/15', accent: 'text-tertiary' },
+  arc_pool_deposit: { icon: 'rocket_launch', well: 'bg-primary/10 border-primary/15', accent: 'text-primary' },
+  arc_pool_withdraw: { icon: 'rocket_launch', well: 'bg-tertiary/10 border-tertiary/15', accent: 'text-tertiary' },
 }
 const FALLBACK_STYLE = { icon: 'history', well: 'bg-white/[0.04] border-white/[0.08]', accent: 'text-on-surface-variant' }
 

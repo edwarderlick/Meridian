@@ -4,10 +4,21 @@ import { db } from '../config/firebase'
 
 type BridgeStepLike = BridgeResult['steps'][number]
 
-/** Real Firestore write for a completed Transfer send — never called on rejection/failure. */
+/** Real Firestore write for a completed Transfer send — never called on rejection/failure.
+ *  `recurringRuleId`, when present, traces this execution back to the Recurring Payments rule
+ *  that produced it — RecurringPayments.tsx's Run History filters on it; every other consumer
+ *  (Activity Feed, Spending Analytics) ignores it and treats this like any other real transfer. */
 export async function logTransfer(
   walletAddress: string,
-  data: { txHash: string; amount: number; token: string; chain: string; counterparty: string },
+  data: {
+    txHash: string
+    amount: number
+    token: string
+    chain: string
+    counterparty: string
+    recurringRuleId?: string
+    explorerUrl?: string
+  },
 ) {
   // Lowercased — Firebase Auth's uid (see useWalletAuth) is always lowercase, and Firestore
   // rules compare request.auth.uid against this exact path segment.
@@ -141,6 +152,86 @@ export async function logAaveWithdraw(
   await addDoc(collection(db, 'users', walletAddress.toLowerCase(), 'transfers'), {
     type: 'aave_withdraw',
     status: 'success',
+    ...data,
+    timestamp: serverTimestamp(),
+  })
+}
+
+/**
+ * Real Firestore write for a completed Uniswap V3 LP deposit (swap leg + mint). Records the exact
+ * amount0/amount1 actually supplied — real numbers straight off the mint() transaction's own return
+ * values, never estimated — so a later PnL comparison (current amounts vs. these) has a real cost
+ * basis to compare against, in native token amounts rather than a fabricated USD figure (there's no
+ * reliable USD price for testnet WETH, see Liquidity.tsx's disclosure).
+ */
+export async function logUniswapDeposit(
+  walletAddress: string,
+  data: {
+    txHash: string
+    chain: string
+    poolName: string
+    tokenId: string
+    amount0: string
+    amount1: string
+    token0Symbol: string
+    token1Symbol: string
+    explorerUrl?: string
+  },
+) {
+  await addDoc(collection(db, 'users', walletAddress.toLowerCase(), 'transfers'), {
+    type: 'uniswap_deposit',
+    status: 'success',
+    ...data,
+    timestamp: serverTimestamp(),
+  })
+}
+
+/** Real Firestore write for a completed Uniswap V3 LP withdrawal (decreaseLiquidity + collect + burn). */
+export async function logUniswapWithdraw(
+  walletAddress: string,
+  data: {
+    txHash: string
+    chain: string
+    poolName: string
+    tokenId: string
+    amount0: string
+    amount1: string
+    token0Symbol: string
+    token1Symbol: string
+    explorerUrl?: string
+  },
+) {
+  await addDoc(collection(db, 'users', walletAddress.toLowerCase(), 'transfers'), {
+    type: 'uniswap_withdraw',
+    status: 'success',
+    ...data,
+    timestamp: serverTimestamp(),
+  })
+}
+
+/** Real Firestore write for a completed deposit into Meridian's own ArcYieldPool contract. */
+export async function logArcPoolDeposit(
+  walletAddress: string,
+  data: { txHash: string; amount: string; token: string; chain: string; strategyLabel: string; explorerUrl?: string; recurringRuleId?: string },
+) {
+  await addDoc(collection(db, 'users', walletAddress.toLowerCase(), 'transfers'), {
+    type: 'arc_pool_deposit',
+    status: 'success',
+    poolName: 'ArcYieldPool',
+    ...data,
+    timestamp: serverTimestamp(),
+  })
+}
+
+/** Real Firestore write for a completed withdrawal from Meridian's own ArcYieldPool contract. */
+export async function logArcPoolWithdraw(
+  walletAddress: string,
+  data: { txHash: string; amount: string; token: string; chain: string; strategyLabel: string; explorerUrl?: string },
+) {
+  await addDoc(collection(db, 'users', walletAddress.toLowerCase(), 'transfers'), {
+    type: 'arc_pool_withdraw',
+    status: 'success',
+    poolName: 'ArcYieldPool',
     ...data,
     timestamp: serverTimestamp(),
   })

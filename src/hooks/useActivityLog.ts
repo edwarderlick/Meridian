@@ -7,7 +7,18 @@ import { db } from '../config/firebase'
  * Matches the activity log schema from the phase brief: users/{walletAddress}/transfers/{id},
  * distinguished by `type`. "swap" is included so Swap can adopt this hook once it's wired later.
  */
-export type ActivityType = 'transfer' | 'bridge' | 'gateway_deposit' | 'gateway_withdraw' | 'swap' | 'aave_deposit' | 'aave_withdraw'
+export type ActivityType =
+  | 'transfer'
+  | 'bridge'
+  | 'gateway_deposit'
+  | 'gateway_withdraw'
+  | 'swap'
+  | 'aave_deposit'
+  | 'aave_withdraw'
+  | 'uniswap_deposit'
+  | 'uniswap_withdraw'
+  | 'arc_pool_deposit'
+  | 'arc_pool_withdraw'
 
 export interface ActivityLogEntry {
   id: string
@@ -48,8 +59,21 @@ export interface ActivityLogEntry {
   depositedBy?: string
   depositedTo?: string
   errorMessage?: string
-  /** Aave-specific: which real pool the deposit/withdrawal was against (e.g. "USDC Yield Vault (Aave V3)"). */
+  /** Aave/Uniswap-specific: which real pool the deposit/withdrawal was against (e.g. "USDC Yield Vault (Aave V3)"). */
   poolName?: string
+  /** Uniswap-specific: the LP position NFT's token ID. */
+  tokenId?: string
+  /** Uniswap-specific: real amount0/amount1 supplied or returned, with their token symbols — a
+   *  two-asset deposit/withdrawal has no single `amount`/`token` the way every other type does. */
+  amount0?: string
+  amount1?: string
+  token0Symbol?: string
+  token1Symbol?: string
+  /** Transfer-specific: present only when this send was a Recurring Payments execution — traces
+   *  it back to the rule that produced it. */
+  recurringRuleId?: string
+  /** Arc pool-specific: which strategy the deposit/withdrawal was against (e.g. "7-Day Lock"). */
+  strategyLabel?: string
   timestamp: Date | null
 }
 
@@ -63,6 +87,10 @@ const TYPE_LABELS: Record<ActivityType, string> = {
   swap: 'Swap',
   aave_deposit: 'Aave Deposit',
   aave_withdraw: 'Aave Withdraw',
+  uniswap_deposit: 'Uniswap LP Deposit',
+  uniswap_withdraw: 'Uniswap LP Withdraw',
+  arc_pool_deposit: 'Arc Pool Deposit',
+  arc_pool_withdraw: 'Arc Pool Withdraw',
 }
 
 function toEntry(id: string, data: DocumentData): ActivityLogEntry {
@@ -89,6 +117,13 @@ function toEntry(id: string, data: DocumentData): ActivityLogEntry {
     depositedTo: data.depositedTo,
     errorMessage: data.errorMessage,
     poolName: data.poolName,
+    tokenId: data.tokenId,
+    amount0: data.amount0,
+    amount1: data.amount1,
+    token0Symbol: data.token0Symbol,
+    token1Symbol: data.token1Symbol,
+    recurringRuleId: data.recurringRuleId,
+    strategyLabel: data.strategyLabel,
     sequence: data.sequence,
     timestamp: data.timestamp instanceof Timestamp ? data.timestamp.toDate() : null,
   }

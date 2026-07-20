@@ -28,6 +28,12 @@ import { useSolanaAdapter } from '../../hooks/useSolanaAdapter'
 import { fetchSolanaSolBalance, useSolanaTokenBalance } from '../../hooks/useSolanaTokenBalance'
 import { useTokenBalance } from '../../hooks/useTokenBalance'
 import { usdcBalanceQueryKey } from '../../hooks/useUsdcBalances'
+import { useUniswapOverview } from '../../hooks/useUniswapOverview'
+import { UNISWAP_CHAIN_IDS } from '../../lib/uniswapClient'
+import UniswapLiquidityPanel from '../../components/console/UniswapLiquidityPanel'
+import ArcYieldPoolPanel from '../../components/console/ArcYieldPoolPanel'
+import { useArcYieldPoolPosition, useArcYieldPoolStrategies } from '../../hooks/useArcYieldPool'
+import { isArcYieldPoolDeployed } from '../../lib/arcYieldPoolClient'
 import { amountError } from '../../lib/validation'
 
 /** One kit instance for the app — mirrors Bridge.tsx's own module-level instance; stateless
@@ -37,11 +43,8 @@ const kit = new BridgeKit()
 const REAL_POOL_NAME = 'USDC Yield Vault (Aave V3)'
 
 /** Placeholder-only rows — explicitly NOT wired to any real yield destination (out of scope for
- *  this pass). Kept visually distinct from the real pool below via their status chip. */
-const PLACEHOLDER_POOLS = [
-  { name: 'USDC-WETH Pool', chains: ['ethereum', 'polygon'] as const },
-  { name: 'Stable Aggregator', chains: ['arbitrum', 'polygon', 'optimism'] as const },
-]
+ *  this pass). Kept visually distinct from the real pools above via their status chip. */
+const PLACEHOLDER_POOLS = [{ name: 'Stable Aggregator', chains: ['arbitrum', 'polygon', 'optimism'] as const }]
 
 const CHAIN_OPTIONS = CHAIN_LIST_STANDARD.map((c) => ({
   value: c.id,
@@ -72,6 +75,7 @@ const PHASE_META: { phase: DepositPhase; label: string; icon: string }[] = [
 const MIN_SOL_FOR_BURN_FEES = 0.01
 
 function LiquidityScreen() {
+  const [selectedPool, setSelectedPool] = useState<'aave' | 'uniswap' | 'arcPool'>('aave')
   const [tab, setTab] = useState<'deposit' | 'withdraw'>('deposit')
 
   // ---- Deposit state ----
@@ -107,6 +111,10 @@ function LiquidityScreen() {
   const wagmiConfig = useConfig()
   const queryClient = useQueryClient()
   const aaveOverview = useAaveOverview()
+  const uniswapOverview = useUniswapOverview()
+  const arcPoolPosition = useArcYieldPoolPosition()
+  const { strategies: arcPoolStrategies } = useArcYieldPoolStrategies()
+  const arcPoolActivePositions = arcPoolPosition.active ? 1 : 0
 
   const source = CHAINS[sourceChain]
   const target = CHAINS[targetChain]
@@ -443,7 +451,7 @@ function LiquidityScreen() {
           <div>
             <div className="flex items-center gap-2.5 mb-4">
               <span className="font-label-caps text-on-surface-variant/55 tracking-[0.14em] uppercase text-[11px]">
-                Total Deposited
+                Total Deposited (Aave V3)
               </span>
               <span className="status-chip text-[10px]">
                 <span className="status-chip-dot status-chip-dot-live" />
@@ -473,7 +481,9 @@ function LiquidityScreen() {
               <p className="font-label-caps text-on-surface-variant/55 uppercase text-[11px] tracking-[0.14em] mb-2">
                 Active Positions
               </p>
-              <p className="font-mono-data text-[32px] font-bold tabular-nums">{aaveOverview.activePositions}</p>
+              <p className="font-mono-data text-[32px] font-bold tabular-nums">
+                {aaveOverview.activePositions + uniswapOverview.activePositions + arcPoolActivePositions}
+              </p>
             </div>
           </div>
         </div>
@@ -481,8 +491,149 @@ function LiquidityScreen() {
 
       <AuthStatusBanner />
 
+      {(aaveOverview.activePositions > 0 || uniswapOverview.activePositions > 0 || arcPoolActivePositions > 0) && (
+        <section className="glass-premium rounded-[32px] overflow-hidden">
+          <div className="p-6 border-b border-white/[0.06]">
+            <h3 className="font-headline-lg text-[18px] font-semibold tracking-tight">Your Positions</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="font-label-caps text-[10px] text-on-surface-variant/40 border-b border-white/[0.06]">
+                  <th className="px-6 py-3.5 font-bold uppercase tracking-[0.12em]">Market</th>
+                  <th className="px-6 py-3.5 font-bold uppercase tracking-[0.12em]">Chain</th>
+                  <th className="px-6 py-3.5 font-bold uppercase tracking-[0.12em] text-right">Status</th>
+                  <th className="px-6 py-3.5 font-bold uppercase tracking-[0.12em] text-right">Balance</th>
+                  <th className="px-6 py-3.5 font-bold uppercase tracking-[0.12em] text-right">Est. Yield</th>
+                  <th className="px-6 py-3.5 font-bold uppercase tracking-[0.12em] text-right">Unclaimed</th>
+                </tr>
+              </thead>
+              <tbody className="font-body-sm divide-y divide-white/[0.04]">
+                {aaveOverview.chains
+                  .filter((c) => c.balance > 0)
+                  .map((c) => (
+                    <tr key={`aave-${c.chainId}`} className="hover:bg-white/[0.03] transition-premium">
+                      <td className="px-6 py-4 font-bold tracking-tight">{REAL_POOL_NAME}</td>
+                      <td className="px-6 py-4 text-on-surface-variant/60">{CHAINS[c.chainId].name}</td>
+                      <td className="px-6 py-4 text-right">
+                        <span className="status-chip text-[9px]">
+                          <span className="status-chip-dot status-chip-dot-live" />
+                          Earning
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right font-mono-data">{c.balance.toFixed(4)} USDC</td>
+                      <td className="px-6 py-4 text-right font-mono-data text-tertiary">
+                        {c.apyPercent !== null ? `${c.apyPercent.toFixed(2)}%` : '—'}
+                      </td>
+                      <td className="px-6 py-4 text-right font-mono-data text-on-surface-variant/45">—</td>
+                    </tr>
+                  ))}
+                {uniswapOverview.chains
+                  .filter((c) => c.position.hasPosition)
+                  .map((c) => {
+                    const usdcIsToken0 = c.position.token0?.toLowerCase() === USDC_BY_CHAIN[c.evmChainId]?.address.toLowerCase()
+                    return (
+                      <tr key={`uni-${c.chainId}`} className="hover:bg-white/[0.03] transition-premium">
+                        <td className="px-6 py-4 font-bold tracking-tight">USDC-WETH Pool</td>
+                        <td className="px-6 py-4 text-on-surface-variant/60">{c.name}</td>
+                        <td className="px-6 py-4 text-right">
+                          <span className={`status-chip text-[9px] ${c.position.inRange ? '' : '!bg-error/10 !text-error'}`}>
+                            <span className={`status-chip-dot ${c.position.inRange ? 'status-chip-dot-live' : ''}`} />
+                            {c.position.inRange ? 'In Range' : 'Out of Range'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-right font-mono-data">
+                          {Number(c.position.currentAmount0Formatted).toFixed(4)} {usdcIsToken0 ? 'USDC' : 'WETH'} /{' '}
+                          {Number(c.position.currentAmount1Formatted).toFixed(6)} {usdcIsToken0 ? 'WETH' : 'USDC'}
+                        </td>
+                        <td className="px-6 py-4 text-right font-mono-data text-tertiary">Fee-based</td>
+                        <td className="px-6 py-4 text-right font-mono-data text-on-surface-variant/45">
+                          {Number(c.position.unclaimedFees0Formatted).toFixed(4)} / {Number(c.position.unclaimedFees1Formatted).toFixed(6)}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                {arcPoolActivePositions > 0 && (
+                  <tr key="arc-pool" className="hover:bg-white/[0.03] transition-premium">
+                    <td className="px-6 py-4 font-bold tracking-tight">ArcYieldPool ({arcPoolStrategies.find((s) => s.id === arcPoolPosition.strategyId)?.label ?? 'Flexible'})</td>
+                    <td className="px-6 py-4 text-on-surface-variant/60">{CHAINS.arc.name}</td>
+                    <td className="px-6 py-4 text-right">
+                      <span className="status-chip text-[9px]">
+                        <span className="status-chip-dot status-chip-dot-live" />
+                        Earning
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono-data">{arcPoolPosition.principalFormatted.toFixed(4)} USDC</td>
+                    <td className="px-6 py-4 text-right font-mono-data text-tertiary">
+                      {arcPoolStrategies.find((s) => s.id === arcPoolPosition.strategyId)?.aprPercent.toFixed(2) ?? '—'}%
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono-data text-on-surface-variant/45">
+                      {arcPoolPosition.rewardsOwedFormatted.toFixed(6)}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
       <div className="grid grid-cols-12 gap-gutter items-start">
         <div className="col-span-12 lg:col-span-7 space-y-gutter">
+          <div className="glass-premium rounded-3xl p-1.5 flex gap-1">
+            <button
+              type="button"
+              onClick={() => setSelectedPool('aave')}
+              className={`flex-1 py-3.5 font-semibold rounded-2xl transition-premium text-sm flex items-center justify-center gap-2 ${
+                selectedPool === 'aave'
+                  ? 'bg-primary/15 text-primary border border-primary/20 shadow-[0_0_20px_-8px_rgba(255,170,246,0.3)]'
+                  : 'text-on-surface-variant hover:text-on-surface hover:bg-white/[0.03] border border-transparent'
+              }`}
+            >
+              {REAL_POOL_NAME}
+              <span className="status-chip text-[9px]">
+                <span className="status-chip-dot status-chip-dot-live" />
+                Live
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedPool('uniswap')}
+              className={`flex-1 py-3.5 font-semibold rounded-2xl transition-premium text-sm flex items-center justify-center gap-2 ${
+                selectedPool === 'uniswap'
+                  ? 'bg-primary/15 text-primary border border-primary/20 shadow-[0_0_20px_-8px_rgba(255,170,246,0.3)]'
+                  : 'text-on-surface-variant hover:text-on-surface hover:bg-white/[0.03] border border-transparent'
+              }`}
+            >
+              USDC-WETH Pool (Uniswap V3)
+              <span className="status-chip text-[9px]">
+                <span className="status-chip-dot" />
+                Beta
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedPool('arcPool')}
+              className={`flex-1 py-3.5 font-semibold rounded-2xl transition-premium text-sm flex items-center justify-center gap-2 ${
+                selectedPool === 'arcPool'
+                  ? 'bg-primary/15 text-primary border border-primary/20 shadow-[0_0_20px_-8px_rgba(255,170,246,0.3)]'
+                  : 'text-on-surface-variant hover:text-on-surface hover:bg-white/[0.03] border border-transparent'
+              }`}
+            >
+              ArcYieldPool (Own Contract)
+              <span className="status-chip text-[9px]">
+                <span className={`status-chip-dot ${isArcYieldPoolDeployed() ? 'status-chip-dot-live' : ''}`} />
+                {isArcYieldPoolDeployed() ? 'Live' : 'Not Deployed'}
+              </span>
+            </button>
+          </div>
+
+          {selectedPool === 'uniswap' ? (
+            <UniswapLiquidityPanel />
+          ) : selectedPool === 'arcPool' ? (
+            <ArcYieldPoolPanel />
+          ) : (
+            <>
           <div className="glass rounded-3xl p-1.5 flex gap-1">
             <button
               type="button"
@@ -900,6 +1051,8 @@ function LiquidityScreen() {
               </div>
             </div>
           )}
+            </>
+          )}
         </div>
 
         <div className="col-span-12 lg:col-span-5">
@@ -907,7 +1060,11 @@ function LiquidityScreen() {
             <div className="p-6 border-b border-white/[0.06]">
               <h3 className="font-headline-lg text-[18px] font-semibold tracking-tight">Available Pools</h3>
               <p className="text-[11px] text-on-surface-variant/40 mt-1">
-                {REAL_POOL_NAME} deposits real, self-custodial funds into Aave V3 — the other pools below remain shown for reference only, not yet wired to a real yield destination.
+                {REAL_POOL_NAME} deposits real, self-custodial funds into Aave V3. USDC-WETH Pool is wired to a real,
+                verified Uniswap V3 pool too, but is marked Beta until a real mint and withdraw have been confirmed
+                end-to-end on-chain — not before. ArcYieldPool is Meridian's own contract, built because Arc Testnet had
+                no yield destination at all until now. The pool below remains shown for reference only, not yet wired to a
+                real yield destination.
               </p>
             </div>
             <div className="overflow-x-auto">
@@ -921,7 +1078,10 @@ function LiquidityScreen() {
                   </tr>
                 </thead>
                 <tbody className="font-body-sm divide-y divide-white/[0.04]">
-                  <tr className="hover:bg-white/[0.03] transition-premium">
+                  <tr
+                    onClick={() => setSelectedPool('aave')}
+                    className={`hover:bg-white/[0.03] transition-premium cursor-pointer ${selectedPool === 'aave' ? 'bg-primary/[0.04]' : ''}`}
+                  >
                     <td className="px-6 py-4">
                       <p className="font-bold tracking-tight text-sm mb-1.5">{REAL_POOL_NAME}</p>
                       <div className="flex -space-x-1.5">
@@ -941,6 +1101,53 @@ function LiquidityScreen() {
                       <span className="status-chip text-[9px]">
                         <span className="status-chip-dot status-chip-dot-live" />
                         Live
+                      </span>
+                    </td>
+                  </tr>
+                  <tr
+                    onClick={() => setSelectedPool('uniswap')}
+                    className={`hover:bg-white/[0.03] transition-premium cursor-pointer ${selectedPool === 'uniswap' ? 'bg-primary/[0.04]' : ''}`}
+                  >
+                    <td className="px-6 py-4">
+                      <p className="font-bold tracking-tight text-sm mb-1.5">USDC-WETH Pool (Uniswap V3)</p>
+                      <div className="flex -space-x-1.5">
+                        {UNISWAP_CHAIN_IDS.map((chainId) => {
+                          const c = CHAINS[chainId]
+                          return <c.Icon key={chainId} className="w-5 h-5 rounded-full border-2 border-surface-container-low" />
+                        })}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono-data text-tertiary">Fee-based</td>
+                    <td className="px-6 py-4 text-right font-mono-data text-on-surface-variant/45">
+                      {uniswapOverview.activePositions > 0 ? `${uniswapOverview.activePositions} active` : '—'}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <span className="status-chip text-[9px]" title="Real pool, real contracts — not yet confirmed with an end-to-end mint + withdraw transaction">
+                        <span className="status-chip-dot" />
+                        Beta
+                      </span>
+                    </td>
+                  </tr>
+                  <tr
+                    onClick={() => setSelectedPool('arcPool')}
+                    className={`hover:bg-white/[0.03] transition-premium cursor-pointer ${selectedPool === 'arcPool' ? 'bg-primary/[0.04]' : ''}`}
+                  >
+                    <td className="px-6 py-4">
+                      <p className="font-bold tracking-tight text-sm mb-1.5">ArcYieldPool (Own Contract)</p>
+                      <div className="flex -space-x-1.5">
+                        <CHAINS.arc.Icon className="w-5 h-5 rounded-full border-2 border-surface-container-low" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono-data text-tertiary">
+                      {arcPoolStrategies.length > 0 ? `${Math.min(...arcPoolStrategies.map((s) => s.aprPercent)).toFixed(2)}–${Math.max(...arcPoolStrategies.map((s) => s.aprPercent)).toFixed(2)}%` : '—'}
+                    </td>
+                    <td className="px-6 py-4 text-right font-mono-data text-on-surface-variant/45">
+                      {arcPoolActivePositions > 0 ? `$${arcPoolPosition.principalFormatted.toFixed(2)}` : '$0.00'}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <span className="status-chip text-[9px]" title={isArcYieldPoolDeployed() ? 'Meridian\'s own deployed, tested contract' : 'Contract written and tested, not yet deployed'}>
+                        <span className={`status-chip-dot ${isArcYieldPoolDeployed() ? 'status-chip-dot-live' : ''}`} />
+                        {isArcYieldPoolDeployed() ? 'Live' : 'Not Deployed'}
                       </span>
                     </td>
                   </tr>

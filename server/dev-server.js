@@ -10,6 +10,7 @@ import express from 'express'
 import { circleHandler } from '../api/_lib/circleHandler.js'
 import { swapHandler } from '../api/_lib/swapHandler.js'
 import { nonceHandler, verifyHandler } from '../api/_lib/authHandler.js'
+import cronEvaluateHandler from '../api/cron/evaluate.js'
 
 const app = express()
 app.use(express.json())
@@ -33,6 +34,11 @@ app.all('/api/circle/*splat', (req, res) => {
 
 app.post('/api/auth/nonce', nonceHandler)
 app.post('/api/auth/verify', verifyHandler)
+
+// Vercel Cron only actually fires on a deployed project — this route lets the same evaluator be
+// triggered manually in local dev (e.g. `curl -X POST http://localhost:3001/api/cron/evaluate`)
+// without waiting for a real deployment.
+app.post('/api/cron/evaluate', cronEvaluateHandler)
 
 const port = process.env.API_PORT || 3001
 const server = app.listen(port, () => {

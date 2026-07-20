@@ -182,6 +182,8 @@ function TransferForm() {
       void usdcBalance.refetch()
       void queryClient.invalidateQueries({ queryKey: usdcBalanceQueryKey(chain.evmChainId, walletAddress) })
 
+      const explorerUrl = getExplorerTxUrl(chain.evmChainId, hash)
+
       // Own try/catch: the transfer already succeeded on-chain at this point, so a Firestore
       // write failure (e.g. sign-in hadn't finished yet) must never surface as "Transfer failed."
       try {
@@ -191,13 +193,14 @@ function TransferForm() {
           token,
           chain: chain.name,
           counterparty: address,
+          explorerUrl,
         })
       } catch (logErr) {
         console.error('Failed to persist transfer to Firestore:', logErr)
       }
 
       setSentTxHash(hash)
-      setSentExplorerUrl(getExplorerTxUrl(chain.evmChainId, hash))
+      setSentExplorerUrl(explorerUrl)
       setSent(true)
       setReviewOpen(false)
       setAmount('')
