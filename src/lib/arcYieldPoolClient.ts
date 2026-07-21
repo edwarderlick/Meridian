@@ -1,4 +1,4 @@
-import type { Address } from 'viem'
+import { BaseError, ContractFunctionRevertedError, type Address } from 'viem'
 import { arcTestnet } from '../config/chains'
 import { USDC_BY_CHAIN } from '../config/tokens'
 
@@ -118,6 +118,37 @@ export const ARC_YIELD_POOL_ABI = [
     ],
   },
   { name: 'usdc', type: 'function', stateMutability: 'view', inputs: [], outputs: [{ type: 'address' }] },
+  // Custom errors — transcribed from ArcYieldPool.sol. Required in the ABI for viem to decode a
+  // revert's 4-byte selector back into a name + args; without these entries a revert just shows as
+  // an opaque "execution reverted" / "custom error" with no explanation of what actually happened.
+  { name: 'ZeroAmount', type: 'error', inputs: [] },
+  { name: 'InvalidStrategy', type: 'error', inputs: [] },
+  {
+    name: 'StrategyMismatch',
+    type: 'error',
+    inputs: [
+      { name: 'activeStrategyId', type: 'uint8' },
+      { name: 'requestedStrategyId', type: 'uint8' },
+    ],
+  },
+  { name: 'NoPosition', type: 'error', inputs: [] },
+  { name: 'StillLocked', type: 'error', inputs: [{ name: 'unlocksAt', type: 'uint256' }] },
+  {
+    name: 'InsufficientPrincipal',
+    type: 'error',
+    inputs: [
+      { name: 'requested', type: 'uint256' },
+      { name: 'available', type: 'uint256' },
+    ],
+  },
+  {
+    name: 'InsufficientReserve',
+    type: 'error',
+    inputs: [
+      { name: 'requested', type: 'uint256' },
+      { name: 'available', type: 'uint256' },
+    ],
+  },
 ] as const
 
 /** Same live-re-verification discipline as aaveClient.ts's getAaveMarket() — confirms the deployed
@@ -127,4 +158,45 @@ export async function verifyArcYieldPoolUsdc(readUsdc: () => Promise<Address>): 
   if (!ARC_YIELD_POOL_USDC) return false
   const onChainUsdc = await readUsdc()
   return onChainUsdc.toLowerCase() === ARC_YIELD_POOL_USDC.address.toLowerCase()
+}
+
+function strategyLabel(id: number): string {
+  return STRATEGIES.find((s) => s.id === id)?.label ?? `strategy ${id}`
+}
+
+/**
+ * Turns a raw viem/wagmi write error into the specific, human-readable explanation the contract
+ * actually gave, instead of a generic "execution reverted" / "custom error" the wallet shows. Falls
+ * back gracefully to viem's own short message, then to the raw error, for anything not decodable —
+ * never throws itself, always returns something displayable.
+ */
+export function describeArcYieldPoolError(error: unknown): string {
+  if (error instanceof BaseError) {
+    const revertError = error.walk((e) => e instanceof ContractFunctionRevertedError) as ContractFunctionRevertedError | undefined
+    const errorName = revertError?.data?.errorName
+    const args = revertError?.data?.args ?? []
+    switch (errorName) {
+      case 'StrategyMismatch': {
+        const [activeId, requestedId] = args as [number, number]
+        return `You already have an active position in ${strategyLabel(activeId)} — withdraw it before depositing into ${strategyLabel(requestedId)}.`
+      }
+      case 'StillLocked': {
+        const [unlocksAt] = args as [bigint]
+        return `This position is still locked until ${new Date(Number(unlocksAt) * 1000).toLocaleString()}.`
+      }
+      case 'InsufficientReserve':
+        return "The pool's reward reserve can't cover the rewards owed on this withdrawal right now — it needs to be topped up before this will succeed."
+      case 'InsufficientPrincipal':
+        return "That amount is more than this position's available principal."
+      case 'NoPosition':
+        return "There's no active position here to withdraw."
+      case 'InvalidStrategy':
+        return 'Not a valid strategy for this pool.'
+      case 'ZeroAmount':
+        return 'Amount must be greater than zero.'
+      default:
+        return error.shortMessage
+    }
+  }
+  return error instanceof Error ? error.message : 'Transaction failed.'
 }

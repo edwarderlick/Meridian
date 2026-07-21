@@ -1,7 +1,7 @@
-import { readContract, waitForTransactionReceipt } from '@wagmi/core'
+import { readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
 import { useQueryClient } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-import { BaseError, erc20Abi, parseUnits } from 'viem'
+import { erc20Abi, parseUnits } from 'viem'
 import { useAccount, useConfig, useWriteContract } from 'wagmi'
 import { CHAINS } from '../../assets/chains'
 import { useWalletAuthContext } from '../../context/WalletAuthContext'
@@ -14,6 +14,7 @@ import {
   ARC_TESTNET_EVM_CHAIN_ID,
   ARC_YIELD_POOL_ABI,
   ARC_YIELD_POOL_USDC,
+  describeArcYieldPoolError,
   getArcYieldPoolAddress,
   isArcYieldPoolDeployed,
   verifyArcYieldPoolUsdc,
@@ -134,6 +135,22 @@ export default function ArcYieldPoolPanel() {
       }
 
       setDepositPhase({ state: 'pending' })
+      // Pre-flight simulate before ever prompting the wallet — catches a doomed call (e.g. an
+      // existing position in a different strategy) as a clearly-decoded message instead of letting
+      // the user pay gas for a transaction that was always going to revert.
+      try {
+        await simulateContract(wagmiConfig, {
+          chainId: ARC_TESTNET_EVM_CHAIN_ID,
+          address: poolAddress,
+          abi: ARC_YIELD_POOL_ABI,
+          functionName: 'deposit',
+          args: [parsedAmount, strategyId],
+          account: walletAddress,
+        })
+      } catch (simErr) {
+        throw new Error(describeArcYieldPoolError(simErr))
+      }
+
       const depositFees = await getBufferedFees(wagmiConfig, ARC_TESTNET_EVM_CHAIN_ID)
       const depositHash = await writeContractAsync({
         chainId: ARC_TESTNET_EVM_CHAIN_ID,
@@ -170,7 +187,7 @@ export default function ArcYieldPoolPanel() {
       setTouched(false)
       setReviewOpen(false)
     } catch (err) {
-      const message = err instanceof BaseError ? err.shortMessage : err instanceof Error ? err.message : 'Deposit failed.'
+      const message = describeArcYieldPoolError(err)
       const rejected = /user rejected|denied the transaction|user denied/i.test(message)
       setDepositError(rejected ? 'Deposit cancelled — the wallet request was rejected.' : message)
       setReviewOpen(false)
@@ -192,6 +209,22 @@ export default function ArcYieldPoolPanel() {
       if (isLocked) throw new Error(`Still locked until ${lockedUntilDate?.toLocaleString()}.`)
 
       const parsedAmount = parseUnits(withdrawAmount, usdc.decimals)
+
+      // Same pre-flight simulate as deposit — catches StillLocked/InsufficientReserve/
+      // InsufficientPrincipal before the wallet prompt, with a clearly decoded message.
+      try {
+        await simulateContract(wagmiConfig, {
+          chainId: ARC_TESTNET_EVM_CHAIN_ID,
+          address: poolAddress,
+          abi: ARC_YIELD_POOL_ABI,
+          functionName: 'withdraw',
+          args: [parsedAmount],
+          account: walletAddress,
+        })
+      } catch (simErr) {
+        throw new Error(describeArcYieldPoolError(simErr))
+      }
+
       const withdrawFees = await getBufferedFees(wagmiConfig, ARC_TESTNET_EVM_CHAIN_ID)
       const hash = await writeContractAsync({
         chainId: ARC_TESTNET_EVM_CHAIN_ID,
@@ -227,7 +260,7 @@ export default function ArcYieldPoolPanel() {
       setWithdrawTouched(false)
       setWithdrawReviewOpen(false)
     } catch (err) {
-      const message = err instanceof BaseError ? err.shortMessage : err instanceof Error ? err.message : 'Withdrawal failed.'
+      const message = describeArcYieldPoolError(err)
       const rejected = /user rejected|denied the transaction|user denied/i.test(message)
       setWithdrawError(rejected ? 'Withdrawal cancelled — the wallet request was rejected.' : message)
       setWithdrawReviewOpen(false)

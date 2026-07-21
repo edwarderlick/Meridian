@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { BaseError, erc20Abi, isAddress, parseUnits } from 'viem'
-import { readContract, waitForTransactionReceipt } from '@wagmi/core'
+import { erc20Abi, isAddress, parseUnits } from 'viem'
+import { readContract, simulateContract, waitForTransactionReceipt } from '@wagmi/core'
 import { useAccount, useConfig, useWriteContract } from 'wagmi'
 import { CHAINS, EVM_CHAIN_LIST, type ChainId } from '../../assets/chains'
 import AuthStatusBanner from '../../components/console/AuthStatusBanner'
@@ -30,10 +30,12 @@ import {
   ARC_YIELD_POOL_ABI,
   ARC_YIELD_POOL_USDC,
   STRATEGIES,
+  describeArcYieldPoolError,
   getArcYieldPoolAddress,
   isArcYieldPoolDeployed,
   verifyArcYieldPoolUsdc,
 } from '../../lib/arcYieldPoolClient'
+import { useArcYieldPoolPosition } from '../../hooks/useArcYieldPool'
 import { getExplorerTxUrl } from '../../lib/explorer'
 import { getBufferedFees } from '../../lib/gasFees'
 import { daysOverdue, isDue, FREQUENCIES, type Frequency } from '../../lib/recurringSchedule'
@@ -99,6 +101,10 @@ function RecurringPaymentsScreen() {
   const { rules, isLoading: rulesLoading } = useRecurringRules(walletAddress)
   const { entries: history, isLoading: historyLoading } = useActivityLog(walletAddress, ['transfer', 'arc_pool_deposit'])
   const runHistory = history.filter((h) => h.recurringRuleId)
+  // Real, live wallet position on ArcYieldPool — used to warn about (not silently let fail) a
+  // pool_deposit rule targeting a different strategy than the one already open. The contract only
+  // allows one active strategy per wallet at a time, so a mismatch always reverts on execution.
+  const arcPoolPosition = useArcYieldPoolPosition()
 
   // ---- Create form ----
   const [kind, setKind] = useState<RecurringRuleKind>('transfer')
@@ -204,6 +210,22 @@ function RecurringPaymentsScreen() {
           if (approveReceipt.status !== 'success') throw new Error('Approval reverted on-chain.')
         }
 
+        // Pre-flight simulate before ever prompting the wallet — catches a doomed call (most
+        // commonly: this wallet already has an active position in a different strategy than the
+        // one this rule targets) as a clearly-decoded message instead of a wasted-gas revert.
+        try {
+          await simulateContract(wagmiConfig, {
+            chainId: ARC_TESTNET_EVM_CHAIN_ID,
+            address: poolAddress,
+            abi: ARC_YIELD_POOL_ABI,
+            functionName: 'deposit',
+            args: [parsedAmount, executingRule.strategyId ?? 0],
+            account: walletAddress,
+          })
+        } catch (simErr) {
+          throw new Error(describeArcYieldPoolError(simErr))
+        }
+
         const depositFees = await getBufferedFees(wagmiConfig, ARC_TESTNET_EVM_CHAIN_ID)
         const hash = await writeContractAsync({
           chainId: ARC_TESTNET_EVM_CHAIN_ID,
@@ -273,7 +295,7 @@ function RecurringPaymentsScreen() {
       await markRecurringRuleExecuted(walletAddress, executingRule.id, executingRule.frequency)
       setExecutingRule(null)
     } catch (err) {
-      const message = err instanceof BaseError ? err.shortMessage : err instanceof Error ? err.message : 'Execution failed.'
+      const message = describeArcYieldPoolError(err)
       const rejected = /user rejected|denied the transaction|user denied/i.test(message)
       setExecuteError(rejected ? 'Execution cancelled — the wallet request was rejected.' : message)
     } finally {
@@ -392,6 +414,13 @@ function RecurringPaymentsScreen() {
                       </button>
                     ))}
                   </div>
+                  {arcPoolPosition.active && arcPoolPosition.strategyId !== strategyId && (
+                    <p className="text-[11px] text-error mt-2">
+                      Your wallet already has an active {STRATEGIES.find((s) => s.id === arcPoolPosition.strategyId)?.label ?? 'position'} position on
+                      ArcYieldPool — the contract only allows one strategy per wallet at a time, so this rule will fail every time it
+                      runs until that position is withdrawn, or you pick {STRATEGIES.find((s) => s.id === arcPoolPosition.strategyId)?.label} instead.
+                    </p>
+                  )}
                 </div>
               )}
               <div className="grid grid-cols-2 gap-4">
@@ -473,6 +502,10 @@ function RecurringPaymentsScreen() {
                     rule.kind === 'pool_deposit'
                       ? `ArcYieldPool (${STRATEGIES.find((s) => s.id === rule.strategyId)?.label ?? 'Flexible'})`
                       : `${rule.recipient?.slice(0, 6)}…${rule.recipient?.slice(-4)}`
+                  // Same one-strategy-per-wallet constraint the contract enforces — flagged here
+                  // instead of letting the user discover it as a failed execution every time.
+                  const hasStrategyConflict =
+                    rule.kind === 'pool_deposit' && arcPoolPosition.active && arcPoolPosition.strategyId !== rule.strategyId
                   return (
                     <div key={rule.id} className="flex items-center justify-between px-6 py-5 gap-4">
                       <div className="flex items-center gap-4 min-w-0">
@@ -491,6 +524,12 @@ function RecurringPaymentsScreen() {
                               `Next: ${rule.nextDueAt?.toLocaleDateString() ?? '—'}`
                             )}
                           </p>
+                          {hasStrategyConflict && (
+                            <p className="text-[11px] text-error mt-1">
+                              Conflicts with your active {STRATEGIES.find((s) => s.id === arcPoolPosition.strategyId)?.label} position —
+                              will fail until it's withdrawn.
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
