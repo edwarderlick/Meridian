@@ -137,6 +137,11 @@ function RecurringPaymentsScreen() {
     setCreating(true)
     setCreateError(null)
     try {
+      // Firestore's security rules require a signed-in session (request.auth.uid == walletAddress),
+      // separate from the wallet just being connected — same lapsed-session gap fixed below for
+      // toggle/delete. Checked here too so a lapsed session shows a clear message, not a raw
+      // permission-denied error.
+      if (!isAuthenticated) throw new Error('Sign in with your wallet first — check the banner above.')
       if (kind === 'transfer') {
         await createRecurringRule(walletAddress, {
           kind: 'transfer',
@@ -171,6 +176,33 @@ function RecurringPaymentsScreen() {
   const [executeError, setExecuteError] = useState<string | null>(null)
 
   const needsSwitchForExecution = executingRule ? !isOnChain(executingRule.chainId) : false
+
+  // Pause/resume and delete previously discarded their promise's rejection entirely
+  // (`void setRecurringRuleActive(...)`) — a failure (e.g. Firestore security rules denying the
+  // write) was completely invisible, no banner, no console log. Surfaced properly here instead.
+  const [rowActionError, setRowActionError] = useState<string | null>(null)
+
+  const handleToggleActive = async (rule: RecurringRule) => {
+    if (!walletAddress) return
+    setRowActionError(null)
+    try {
+      if (!isAuthenticated) throw new Error('Sign in with your wallet first — check the banner above.')
+      await setRecurringRuleActive(walletAddress, rule.id, !rule.active)
+    } catch (err) {
+      setRowActionError(err instanceof Error ? `Couldn't update this rule: ${err.message}` : "Couldn't update this rule.")
+    }
+  }
+
+  const handleDeleteRule = async (rule: RecurringRule) => {
+    if (!walletAddress) return
+    setRowActionError(null)
+    try {
+      if (!isAuthenticated) throw new Error('Sign in with your wallet first — check the banner above.')
+      await deleteRecurringRule(walletAddress, rule.id)
+    } catch (err) {
+      setRowActionError(err instanceof Error ? `Couldn't delete this rule: ${err.message}` : "Couldn't delete this rule.")
+    }
+  }
 
   const handleExecute = async () => {
     if (!executingRule || !walletAddress || executing) return
@@ -479,6 +511,12 @@ function RecurringPaymentsScreen() {
             <div className="px-8 py-5 border-b border-white/5">
               <h3 className="font-headline-lg text-[18px]">Active Rules</h3>
             </div>
+            {rowActionError && (
+              <div className="mx-6 mt-4 glass rounded-2xl px-5 py-4 flex items-center gap-3 border-error/20 bg-error/5">
+                <span className="material-symbols-outlined text-error text-[20px] shrink-0">error</span>
+                <p className="text-body-sm text-error font-medium">{rowActionError}</p>
+              </div>
+            )}
             {rulesLoading ? (
               <div className="p-6 space-y-3">
                 <SkeletonBlock className="h-16 w-full" />
@@ -545,7 +583,7 @@ function RecurringPaymentsScreen() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => void setRecurringRuleActive(walletAddress!, rule.id, !rule.active)}
+                          onClick={() => void handleToggleActive(rule)}
                           title={rule.active ? 'Pause rule' : 'Resume rule'}
                           className="icon-well w-9 h-9 bg-white/[0.04] border-white/10"
                         >
@@ -553,7 +591,7 @@ function RecurringPaymentsScreen() {
                         </button>
                         <button
                           type="button"
-                          onClick={() => void deleteRecurringRule(walletAddress!, rule.id)}
+                          onClick={() => void handleDeleteRule(rule)}
                           title="Delete rule"
                           className="icon-well w-9 h-9 bg-error/10 border-error/15"
                         >
