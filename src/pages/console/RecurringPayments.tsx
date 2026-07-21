@@ -665,12 +665,16 @@ function RecurringPaymentsScreen() {
 
       <ReviewModal
         open={executingRule !== null}
-        onClose={() => setExecutingRule(null)}
+        onClose={() => {
+          setExecutingRule(null)
+          setExecuteError(null)
+        }}
         onConfirm={() => void handleExecute()}
         confirming={executing}
         title="Execute Recurring Payment"
         confirmLabel="Send Now"
         rows={executingRule ? executeReviewRows(executingRule) : []}
+        error={executeError}
       />
 
       {needsSwitchForExecution && executingRule && (
@@ -690,12 +694,6 @@ function RecurringPaymentsScreen() {
         </div>
       )}
 
-      {executeError && (
-        <div className="glass rounded-2xl px-5 py-4 flex items-center gap-3 border-error/20 bg-error/5">
-          <span className="material-symbols-outlined text-error text-[20px] shrink-0">error</span>
-          <p className="text-body-sm text-error font-medium">{executeError}</p>
-        </div>
-      )}
     </div>
   )
 }

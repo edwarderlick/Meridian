@@ -15,6 +15,11 @@ interface ReviewModalProps {
   confirmLabel?: string
   destructive?: boolean
   confirming?: boolean
+  /** Shown inline inside the modal on a failed confirm — without this, an error set by the caller
+   *  renders wherever that page happens to put its error banner, which is easy to end up completely
+   *  hidden behind this still-open modal (confirmed real: RecurringPayments' executeError banner
+   *  rendered at the bottom of the whole page, invisible while this modal sat open on top of it). */
+  error?: string | null
 }
 
 export default function ReviewModal({
@@ -26,6 +31,7 @@ export default function ReviewModal({
   confirmLabel = 'Confirm',
   destructive = false,
   confirming = false,
+  error,
 }: ReviewModalProps) {
   return (
     <Modal
@@ -77,6 +83,12 @@ export default function ReviewModal({
       <p className="text-[11px] text-on-surface-variant/40 mt-5 leading-relaxed">
         Review the details above carefully. This action cannot be undone once submitted on-chain.
       </p>
+      {error && (
+        <div className="glass rounded-2xl px-4 py-3 flex items-center gap-3 border-error/20 bg-error/5 mt-4">
+          <span className="material-symbols-outlined text-error text-[18px] shrink-0">error</span>
+          <p className="text-body-sm text-error font-medium">{error}</p>
+        </div>
+      )}
     </Modal>
   )
 }
