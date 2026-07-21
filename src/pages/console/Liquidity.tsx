@@ -447,31 +447,19 @@ function LiquidityScreen() {
     <div className="max-w-[1200px] mx-auto space-y-gutter">
       <section className="glass-premium rounded-[32px] p-10 relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-tertiary/5 blur-3xl rounded-full pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row justify-between items-end md:items-center gap-8">
-          <div>
-            <div className="flex items-center gap-2.5 mb-4">
-              <span className="font-label-caps text-on-surface-variant/55 tracking-[0.14em] uppercase text-[11px]">
-                Total Deposited (Aave V3)
-              </span>
-              <span className="status-chip text-[10px]">
-                <span className="status-chip-dot status-chip-dot-live" />
-                Live
-              </span>
-            </div>
-            <h2 className="font-headline-xl text-on-surface tracking-tighter flex items-baseline gap-2">
-              <span className="opacity-40 text-[32px] font-semibold">$</span>
-              {aaveOverview.isLoading ? (
-                <SkeletonBlock className="h-10 w-40" />
-              ) : (
-                <span className="text-[56px] font-extrabold tabular-nums">{aaveOverview.totalDeposited.toFixed(2)}</span>
-              )}
-            </h2>
+        <div className="relative z-10 flex items-center justify-between gap-8">
+          <div className="flex items-center gap-2.5">
+            <h2 className="font-headline-lg text-[20px] font-semibold tracking-tight">Liquidity</h2>
+            <span className="status-chip text-[10px]">
+              <span className="status-chip-dot status-chip-dot-live" />
+              Live
+            </span>
           </div>
 
           <div className="flex gap-10">
             <div>
               <p className="font-label-caps text-on-surface-variant/55 uppercase text-[11px] tracking-[0.14em] mb-2">
-                Blended APY
+                Aave Blended APY
               </p>
               <p className="font-mono-data text-[32px] font-bold text-tertiary tabular-nums">
                 {aaveOverview.blendedApyPercent !== null ? `${aaveOverview.blendedApyPercent.toFixed(2)}%` : '—%'}
@@ -488,6 +476,12 @@ function LiquidityScreen() {
           </div>
         </div>
       </section>
+
+      <p className="text-[11px] text-on-surface-variant/45 -mt-2">
+        A single portfolio-wide dollar total isn't shown here on purpose — Uniswap's USDC-WETH position has no reliable
+        testnet USD price for its WETH leg (see the pool tab for why), so summing it with Aave/ArcYieldPool's USDC
+        balances would mean fabricating a number. Real balances for every position are broken out below.
+      </p>
 
       <AuthStatusBanner />
 
